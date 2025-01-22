@@ -163,4 +163,12 @@
 | lingual   | ['lɪŋgwəl]    | adj.  | 舌头的；话语的；语言的；舌音的    |  
 |   |   | n.    | 舌神经；舌动脉；舌音；舌音字母    |
 | materialization   | [məˌtɪərɪrlaɪ'zeɪʃn]  | n.    | 实体化；具象化；赋予形体  |
-| dangle    |  [ˈdæŋɡ(ə)l]  | v.    | 悬挂；悬空；吊着  |
+ | dangle    |  [ˈdæŋɡ(ə)l]  | v.    | 悬挂；悬空；吊着  |<!--new since 2023.11.17 -->
+ |consecutive|   [kənˈsekjətɪv] | adj.  | 连续不断的；连贯的    |
+ | slant    |  [slænt]  | n.    | 倾斜；斜面；倾斜度；斜线；    |
+ ||| v. |倾斜；有倾向性地陈述；使倾斜 |
+ ||| adj.   |倾斜的 |
+| alphanumeric  | [ˌælfənuˈmerɪk]   | adj.  | 含有字母和数字的；字母和数字并用的    |
+| evict     | [ɪˈvɪkt]  | v.    | 驱逐；逐出；收回  |
+| isomorphic    | [ˌaɪsə'mɔrfɪk]    | adj.  | 同构的；同型的；  |
+| monotonic     | [mɒnəˈtɒnɪk]  | adj.  | 单调的；没有变化的    |
