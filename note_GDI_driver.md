@@ -183,7 +183,7 @@ GDI 与打印相关的功能主要有三个方面
   |-|-|
   |在源文件中设置 `TARGETTYPE=DYNLINK`|在源文件中设置 `TARGETTYPE=GDI_DRIVER`|  
   |在包含 `winddi.h` 之前，必须在源文件中定义预处理器宏`USERMODE_DRIVER`| 不得定义预处理器宏`USERMODE_DRIVER`|
-  |对象模块必须与`umpdddi.lib`和`gdi32.lib`导入库链接|对象模块必须与`win32k.lib`导入库链接。
+  |对象模块必须与`umpdddi.lib`和`gdi32.lib`导入库链接|对象模块必须与`win32k.lib`导入库链接|
   |对于`DRVQUERY_USERMODE`， `DrvQueryDriverInfo`函数必须返回`TRUE` |`DrvQueryDriverInfo`函数必须为`DRVQUERY_USERMODE`返回`FALSE`。 (也可以省略函数。)|
 
 ### 数据格式

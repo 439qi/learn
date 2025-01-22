@@ -270,19 +270,19 @@ DWORD SendRecvBidiDataFromPort(
 
     | 可选值| 含义|
     |-|-|
-    |PRINTER_ACCESS_ADMINISTER| 执行管理性的任务
-    |PRINTER_ACCESS_USE|  执行基础打印操作
-    |PRINTER_ACCESS_MANAGE_LIMITED| 执行管理性的任务<br>Windows 8.1及之后版本可用
+    |PRINTER_ACCESS_ADMINISTER| 执行管理性的任务|
+    |PRINTER_ACCESS_USE|  执行基础打印操作|
+    |PRINTER_ACCESS_MANAGE_LIMITED| 执行管理性的任务<br>Windows 8.1及之后版本可用|
     |PRINTER_ALL_ACCESS| 除了同步之外的所有操作|
   
 - 参数`pAction`  
   表明请求的动作
   |常量|可选值|说明|  
   |-|-|-|  
-  |BIDI_ACTION_ENUM_SCHEMA|L"EnumSchema"|枚举schema
-  |BIDI_ACTION_GET|L"Get"|获取指定schema的值
-  |BIDI_ACTION_GET_ALL|L"GetAll"|获取指定schema所有子节点的值
-  |BIDI_ACTION_SET| L"Set"|设置schema的值
+  |BIDI_ACTION_ENUM_SCHEMA|L"EnumSchema"|枚举schema|
+  |BIDI_ACTION_GET|L"Get"|获取指定schema的值|
+  |BIDI_ACTION_GET_ALL|L"GetAll"|获取指定schema所有子节点的值|
+  |BIDI_ACTION_SET| L"Set"|设置schema的值|
 
 - 参数`pReqData`  
   包含bidi请求列表

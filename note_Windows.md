@@ -39,7 +39,7 @@ Go to "Linker settings -> System". Change the field "Subsystem" to "Windows"
    int WINAPI WinMain(HINSTANCE hInstance,
                   HINSTANCE hPrevInstance,
                   PSTR szCmdLine,
-                  int iCmdShow）
+                  int iCmdShow)
    ```
 
    1. `WINAPI`定义在`<windef.h>`  
@@ -146,8 +146,8 @@ ___
     |标准版|_stprintf|swprintf|sprintf|
     |最大长度版|_sntprintf|_snwprintf|_snprintf|
     |windows版|wsprintf|wsprintfW|wsprintfA|  
-    对于`vsprintf`  
 
+    对于`vsprintf`  
    | |常规|ASCII|宽字符|
    |-|-|-|-|
    |标准版|_vstprintf|vswprintf|vsprintf|
@@ -171,14 +171,14 @@ ___
    |前缀|含义|
    |-|-|
    |CS |窗口类别样式|
-   |CW |建立窗口
-   |DT |绘制文字
-   |IDI|图标ID
-   |IDC|游标ID
-   |MB |消息框
-   |SND|声音
-   |WM |窗口消息
-   |WS |窗口样式
+   |CW |建立窗口|
+   |DT |绘制文字|
+   |IDI|图标ID|
+   |IDC|游标ID|
+   |MB |消息框|
+   |SND|声音|
+   |WM |窗口消息|
+   |WS |窗口样式|
 
 3. 句柄  
    句柄是一个（通常为32位的）整数，它代表一个对象
@@ -578,7 +578,7 @@ Windows使用画刷来绘制填充区域
 ___
 |映像方式|逻辑单位|x|y|
 |-|-|-|-|
-|MM_TEXT|像素|右|下
+|MM_TEXT|像素|右|下|
 |MM_LOMETRIC| 0.1 mm|右|上|
 |MM_HIMETRIC|0.01 mm|右|上|
 |MM_LOENGLISH|0.01 inch|右|上|
@@ -699,8 +699,9 @@ ___
 
    ||字符|死字符|
    |-|-|-|
-   |非系统字符|WM_CHAR|WM_DEADCHAR
-   |系统字符|WM_SYSCHAR|WM_SYSDEADCHAR
+   |非系统字符|WM_CHAR|WM_DEADCHAR|
+   |系统字符|WM_SYSCHAR|WM_SYSDEADCHAR|  
+
    多数情况下，不需要处理`WM_CHAR`外的其他消息  
 2. 消息顺序  
    如果按下Shift键，再按下A键，然后释放A键，再释放Shift键，就会输入大写的A，而窗口消息处理程序会接收到五个消息
@@ -750,18 +751,19 @@ ___
 
    |键|按下|释放|双击|
    |-|-|-|-|
-   |左|WM_LBUTTONDOWN|WM_LBUTTONUP|WM_LBUTTONDBCLK
-   |中|WM_MBUTTONDOWN|WM_MBUTTONUP|WM_MBUTTONDBCLK
-   |右|WM_RBUTTONDOWN|WM_RBUTTONUP|WM_RBUTTONDBCLK
-   **已过时，现在有更多鼠标消息了**  
+   |左|WM_LBUTTONDOWN|WM_LBUTTONUP|WM_LBUTTONDBCLK|
+   |中|WM_MBUTTONDOWN|WM_MBUTTONUP|WM_MBUTTONDBCLK|
+   |右|WM_RBUTTONDOWN|WM_RBUTTONUP|WM_RBUTTONDBCLK|
+   > **已过时，现在有更多鼠标消息了**  
 4. 对以上消息，`lParam`低字节为x坐标，高字节为y坐标（显示区域的相对坐标）；`wParam`指示鼠标按键以及Shift和Ctrl键的状态
    |||
    |-|-|
-   |MK_LBUTTON|按下左键
-   |MK_MBUTTON|按下中键
-   |MK_RBUTTON|按下右键
-   |MK_SHIFT|按下Shift键
-   |MK_CONTROL|按下Ctrl键
+   |MK_LBUTTON|按下左键|
+   |MK_MBUTTON|按下中键|
+   |MK_RBUTTON|按下右键|
+   |MK_SHIFT|按下Shift键|
+   |MK_CONTROL|按下Ctrl键  |
+
    将`wParam`与以上宏按位与即可得到对应按键状态
 5. 双击鼠标按键  
    必须在窗口类中包含`CS_DBLCLKS`才能收到双击消息  
@@ -782,10 +784,10 @@ ___
    - 该消息通常交由`DefWindowProc`处理，然后Windows依据该消息产生与鼠标位置相关的其他鼠标消息。对于非显示区域鼠标消息，其设置了消息中的`wParam`
      |||
      |-|-|
-     |HICLIENT|显示区域
-     |HTNOWHERE|不在窗口中
-     |HTTRANSPARENT|窗口被覆盖
-     |HTERROR|产生警告
+     |HICLIENT|显示区域|
+     |HTNOWHERE|不在窗口中|
+     |HTTRANSPARENT|窗口被覆盖|
+     |HTERROR|产生警告|
 
 ### 程序中的命中测试
 
@@ -802,7 +804,8 @@ ___
 |父窗口句柄|NULL|hwnd|
 |菜单句柄/子ID|NULL|(HMENU) (y << 8 \| x)|
 |执行实体句柄|hInstance|(HINSTANCE) GetWindowLong (hwnd, GWL_HINSTANCE)|
-|额外参数|NULL|NULL|
+|额外参数|NULL|NULL|  
+
  对于子窗口，菜单句柄的参数代表子ID，即自身相对于父窗口的唯一ID
 
 ### 拦截鼠标
@@ -904,9 +907,9 @@ ___
      `WM_COMMAND`消息也可以由子窗口控件产生，两者区别如下
      ||菜单|控件|
      |-|-|-|
-     |`LOWORD(wParam)`|菜单ID|控件ID
-     |`HIWORD(wParam)`|0|通知码
-     |`lParam`|0|子窗口句柄
+     |`LOWORD(wParam)`|菜单ID|控件ID   |
+     |`HIWORD(wParam)`|0|通知码  |
+     |`lParam`|0|子窗口句柄   |
    - `WM_MENUCHAR`
      > 按下Alt和一个与菜单项不匹配的字符时，或者在显示弹出式菜单时按下一个与弹出式菜单里的项目不匹配的字符键时  
 
