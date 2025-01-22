@@ -33,6 +33,7 @@ Go to "Linker settings -> System". Change the field "Subsystem" to "Windows"
    |winbase.h |Kernel函数|
    |winuser.H |使用者接口函数|
    |wingdi.H |图形设备接口函数|
+
 2. 程序入口
 
    ```cpp
@@ -129,6 +130,7 @@ ___
    |`_tcslen` |`#define _tcslen strlen` |`#define _tcslen wcslen`|
    |`TCHAR` |`typedef char TCHAR` |`typedef wchar_t TCHAR` |
    |`__T(x)`<br>`_T(x)`<br>`_TEXT(x)`|`#define __T(x) x`|`#define __T(x) L##x`|  
+
 2. Windows函数调用  
    Windows API与字符串相关的函数基本都提供了两个版本ASCII版和宽字符版，通过函数名最后的`A`和`W`区分，根据是否定义`UNICODE`将函数替换为对应版本  
 3. `sprintf`系列  
@@ -148,6 +150,7 @@ ___
     |windows版|wsprintf|wsprintfW|wsprintfA|  
 
     对于`vsprintf`  
+
    | |常规|ASCII|宽字符|
    |-|-|-|-|
    |标准版|_vstprintf|vswprintf|vsprintf|
@@ -168,6 +171,7 @@ ___
 
 2. 标识符  
    **不要费力气去记忆Windows程序设计中的数值常数，Windows中使用的每个数值常数在表头文件中均有相应的标识符定义**
+
    |前缀|含义|
    |-|-|
    |CS |窗口类别样式|
@@ -576,6 +580,7 @@ Windows使用画刷来绘制填充区域
 ### GDI映像方式
 
 ___
+
 |映像方式|逻辑单位|x|y|
 |-|-|-|-|
 |MM_TEXT|像素|右|下|
@@ -586,6 +591,7 @@ ___
 |MM_TWIPS|1/1440 inch|右|上|
 |MM_ISOTROPIC|任意(x=y)|可选|可选|
 |MM_ANISOTROPIC|任意(x!=y)|可选|可选|  
+
 > 默认方式为`MM_TEXT`
 
 `SetMapMode(hdc, iMapMode);`  
@@ -705,6 +711,7 @@ ___
    多数情况下，不需要处理`WM_CHAR`外的其他消息  
 2. 消息顺序  
    如果按下Shift键，再按下A键，然后释放A键，再释放Shift键，就会输入大写的A，而窗口消息处理程序会接收到五个消息
+
    |消息|按键或者代码|
    |-|-|
    |WM_KEYDOWN|VK_SHIFT|
@@ -712,6 +719,7 @@ ___
    |WM_CHAR|A的字符代码|
    |WM_KEYUP|A的虚拟键码|
    |WM_KEYUP|VK_SHIFT|
+
 3. 控制字符  
    对于ASCII控制字符，作者的经验是在字符消息中处理而非按键消息  
 4. 死字符  
@@ -754,8 +762,10 @@ ___
    |左|WM_LBUTTONDOWN|WM_LBUTTONUP|WM_LBUTTONDBCLK|
    |中|WM_MBUTTONDOWN|WM_MBUTTONUP|WM_MBUTTONDBCLK|
    |右|WM_RBUTTONDOWN|WM_RBUTTONUP|WM_RBUTTONDBCLK|
+
    > **已过时，现在有更多鼠标消息了**  
 4. 对以上消息，`lParam`低字节为x坐标，高字节为y坐标（显示区域的相对坐标）；`wParam`指示鼠标按键以及Shift和Ctrl键的状态
+
    |||
    |-|-|
    |MK_LBUTTON|按下左键|
@@ -782,6 +792,7 @@ ___
    - 该消息优先于所有其他的鼠标消息，故拦截该消息即可禁用鼠标功能
    - `lParam`指明鼠标的绝对坐标，`wParam`参数未使用
    - 该消息通常交由`DefWindowProc`处理，然后Windows依据该消息产生与鼠标位置相关的其他鼠标消息。对于非显示区域鼠标消息，其设置了消息中的`wParam`
+
      |||
      |-|-|
      |HICLIENT|显示区域|
@@ -792,6 +803,7 @@ ___
 ### 程序中的命中测试
 
 手动计算或通过子窗口来处理
+
 |参数|主窗口|子窗口|
 |-|-|-|
 |窗口类别|"Checker3"|"Checker3_Child"|
@@ -905,11 +917,13 @@ ___
      > 选中了一个被启用的菜单项  
 
      `WM_COMMAND`消息也可以由子窗口控件产生，两者区别如下
+
      ||菜单|控件|
      |-|-|-|
      |`LOWORD(wParam)`|菜单ID|控件ID   |
      |`HIWORD(wParam)`|0|通知码  |
      |`lParam`|0|子窗口句柄   |
+
    - `WM_MENUCHAR`
      > 按下Alt和一个与菜单项不匹配的字符时，或者在显示弹出式菜单时按下一个与弹出式菜单里的项目不匹配的字符键时  
 
@@ -1034,7 +1048,6 @@ ___
 
 ### 动态链接库的基本知识
 
-___
 动态链接库通常并不能直接执行，也不接收消息。它们是一些独立的文件，其中包含能被程序或其它DLL呼叫来完成一定作业的函数
 
 动态链接库的目的之一就是提供能被许多不同的应用程序所使用的函数和资源。有些动态链接库（如字体文件等）被称为「纯资源」。它们只包含数据（通常是资源的形式）而不包含程序代码。

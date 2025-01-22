@@ -15,15 +15,15 @@ using std::thread;
 
 ### thread 方法
 
-- thread::get_id()  
+- `thread::get_id()`  
   获取线程ID
-- thread::join()
+- `thread::join()`
   主线程将阻塞直至子线程执行完毕
-- thread::detach()  
+- `thread::detach()`  
   主线程与子线程分离，即主线程不阻塞
-- this_thread::sleep_for()  
+- `this_thread::sleep_for()`
   当前线程休眠指定时间  
-  其中时间为chrono类型
+  其中时间为 `std::chrono` 类型
 
 ### thread 使用
 

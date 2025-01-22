@@ -51,7 +51,7 @@ LanguageMonitor="XXX Language Monitor,[filename].dll"
 
 ### 初始化
 
-当spooler调用`LoadLibrary()`记载打印监视器dll时，系统调用dll的[`DllEntryPoint()`](#dllmain)  
+当spooler调用`LoadLibrary()`加载打印监视器dll时，系统调用dll的[`DllEntryPoint()`](#dllmain)  
 
 调用语言监视器和端口监视器服务器dll导出的[`InitializePrintMonitor2()`](#initializeprintmonitor2)初始化函数，以及端口监视器UI dll导出的`InitializePrintMonitorUI()`函数  
 初始化函数执行初始化操作并返回所实现的函数指针数组，以及监视器实例句柄  
