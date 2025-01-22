@@ -88,7 +88,7 @@
 |                            |                     | adj.                         | 周围的；外围的；外设的                                     |
 | incorporate                | []                  | v.                           | 包含；吸收；使... 并入；将... 包括在内                     |
 |                            |                     | adj.                         | 法定组织的；无形体的；精神上的；具象化了的                 |
-| abbreviation               | [əˌbriviˈeɪʃ(ə)n]   | n.                           | 缩写；                                                     | [数学]约分； | [音乐]略号 |
+| abbreviation               | [əˌbriviˈeɪʃ(ə)n]   | n.                           | 缩写；\[数学\]约分；\[音乐\]略号 |
 | swift                      | []                  | adj.                         | 飞快的；迅速的                                             |
 |                            |                     | n.                           | 雨燕                                                       |
 | protrusion                 | [proʊˈtruʒ(ə)n]     | n.                           | 伸出；突出物                                               |
@@ -131,14 +131,14 @@
 | propagate                  | [ˈprɑpəˌɡeɪt]       | v.                           | 传播；宣传；增殖，繁殖；传染；遗传                         |
 | discrepancy                | [dɪˈskrepənsi]      | n.                           | 差异；不符合；不一致；矛盾                                 |
 | entitle                    | [ɪnˈtaɪt(ə)l]       | v.                           | 使享有权利；使符合资格；授权                               |
-| terminology                | [ˌtɜrmɪˈnɑlədʒi]    | v.                           | 术语；专业词汇                                             | <!--new since 2023.10.8 --> |
+| terminology                | [ˌtɜrmɪˈnɑlədʒi]    | v.                           | 术语；专业词汇                                             |
 | sustenance                 | [ˈsʌstənəns]        | n.                           | 维持；营养；食物；养料                                     |
 | allotmentə                 | [ˈlɑtmənt]          | n.                           | 分配；分配物；分配量；拨款                                 |
 | criterion {plural}criteria || n.                  | 标准；准则；尺度；规范；判据 |
 | interleaf                 | | n.                  | 夹层；夹入书页中的空白纸     |
 |                            |                     | v.                           | 夹进；交错；交织                                           |
 | colorant                   |                     | n.                           | 着色剂；颜料；染料                                         |
-| glossary                   | [ˈɡlɔsəri]          | n.                           | 词汇表；术语表                                             |<!--new since 2023.10.16 -->
+| glossary                   | [ˈɡlɔsəri]          | n.                           | 词汇表；术语表                                             |
 | pertain   | [pərˈteɪn]    | v.    | 存在；适用；关于；属于    |
 | preset    | [ˌpriˈset]    | v.    | 预设；预置；事先安排；给...预定时间   |
 | precede   | [prɪˈsid]    | v.    | 先于；在...之前发生；走在..前面；领先；由于   |
@@ -163,7 +163,7 @@
 | lingual   | ['lɪŋgwəl]    | adj.  | 舌头的；话语的；语言的；舌音的    |  
 |   |   | n.    | 舌神经；舌动脉；舌音；舌音字母    |
 | materialization   | [məˌtɪərɪrlaɪ'zeɪʃn]  | n.    | 实体化；具象化；赋予形体  |
- | dangle    |  [ˈdæŋɡ(ə)l]  | v.    | 悬挂；悬空；吊着  |<!--new since 2023.11.17 -->
+ | dangle    |  [ˈdæŋɡ(ə)l]  | v.    | 悬挂；悬空；吊着  |
  |consecutive|   [kənˈsekjətɪv] | adj.  | 连续不断的；连贯的    |
  | slant    |  [slænt]  | n.    | 倾斜；斜面；倾斜度；斜线；    |
  ||| v. |倾斜；有倾向性地陈述；使倾斜 |
@@ -171,7 +171,7 @@
 | alphanumeric  | [ˌælfənuˈmerɪk]   | adj.  | 含有字母和数字的；字母和数字并用的    |
 | evict     | [ɪˈvɪkt]  | v.    | 驱逐；逐出；收回  |
 | isomorphic    | [ˌaɪsə'mɔrfɪk]    | adj.  | 同构的；同型的；  |
-| monotonic     | [mɒnəˈtɒnɪk]  | adj.  | 单调的；没有变化的    |   <!-- new since 2023.11.27 -->
+| monotonic     | [mɒnəˈtɒnɪk]  | adj.  | 单调的；没有变化的    |
 | modulo    | ['mɒdjəˌloʊ]  | prep. | 取模  |
 | corridor  | [ˈkɔrɪˌdɔr]   | n.    | 通道；过道；国境线走廊    |
 | permutation   | [ˌpɜrmjʊˈteɪʃ(ə)n]    | n.    | 置换；排列（方式）；组合（方式）|
@@ -180,7 +180,7 @@
 |   | | adj.    | 元音的    |
 | permute   | [pə'mjuːt]    | v.    | 交换，取代；置换；[数]排列    |
 | placard   | [ˈplæˌkɑrd]   | n.    | 海报；标语牌；广告牌  |
-||| v.   | 在...贴公告；在...贴广告；（用布告等）公布
+||| v.   | 在...贴公告；在...贴广告；（用布告等）公布   |
 | proclaim  | [prəˈkleɪm]   | v.    | 宣告；宣布；表明；声明    |
 | ensue | [ɪnˈsu]   | v.    | 接着发生；因而产生    |
 | subside   | [səbˈsaɪd]    | v.    | 沉降；消退；平息  |
@@ -201,7 +201,7 @@
 | misnomer  | [mɪsˈnoʊmər]  | n.    | 用词不当；误用词；误称    |
 | predates  | [ˌpriˈdeɪt]   | v.    | （在日期上）早于，先于    |
 | hoard | [hɔrd]    | v.    | 囤积；贮藏；（尤指）秘藏  |
-|||n.   | （钱、食物、贵重物品等的）贮存；（尤指）秘藏
+|||n.   | （钱、食物、贵重物品等的）贮存；（尤指）秘藏  |
 | acronym   | [ˈækrəˌnɪm]   | n.    | 首字母缩写词      |
 | militate  | [ˈmɪlɪˌteɪt]  | v.  | 产生作用或影响；妨碍；战斗    |
 | embodiment    | [ɪmˈbɑdɪmənt]    | n.   | 体现；具象化；化身   |
@@ -213,17 +213,17 @@
 ||| n.  | 发信号；打旗语    |
 | nifty | [ˈnɪfti]    | adj.  | 精确的；有技巧的；实用的；漂亮的|
 ||| n.  | 俏皮话；漂亮的东西  |
-| auspex    | ['ɔ:spɪsɪz]   | n.    | auspex复数：赞助；主办；（古罗马）鸟兽占卜者
-| preemptive    | [priˈemptɪv]    | adj.  | 抢占式的；[政]先发制人的
+| auspex    | ['ɔ:spɪsɪz]   | n.    | auspex复数：赞助；主办；（古罗马）鸟兽占卜者  |
+| preemptive    | [priˈemptɪv]    | adj.  | 抢占式的；[政]先发制人的    |
 | hierarchy | [ˈhaɪəˌrɑrki] | n.    | 层次体系；阶层；等级制度；统治集团    |
-| poll  | [poʊl]  | n.   | 轮询
+| poll  | [poʊl]  | n.   | 轮询 |
 | intervening   | [ˌɪntərˈvinɪŋ]    | adj.  | 介于中间的    |
 | agile     | [ˈæˌdʒəl] | adj.  | 灵活的；敏捷的；机智的    |
 | cyclically    |   | adv.| 周期地  |
 | synonymous    | [sɪˈnɑnɪməs]  | adj.  | 同义的    |
 | pseudo     |  ['sjuːdəʊ]  | adj.    | 假的；虚拟的；冒充的    |
 | miscellaneous | [ˌmɪsəˈleɪniəs]   | adj.  | 混杂的；各种各样的    |
-|   failover    | [ˈfɛlˌoʊvə]   | n.    | [IT]故障切换；故障转移能力
+|   failover    | [ˈfɛlˌoʊvə]   | n.    | [IT]故障切换；故障转移能力    |
 | hostile   | [ˈhɑst(ə)l]    | adj.  | 敌意的；敌对的；坚决否定的    |
 ||| n.  | 敌对分子  |
 | catastrophic  | [ˌkætəˈstrɑfɪk]   | adj.  | 灾难性的；悲惨的  |
@@ -231,8 +231,31 @@
 | temporal  | [ˈtemp(ə)rəl] | adj.  | 时间的；世俗的；现世的    |
 |||n.   | 太阳穴；世俗的权力；一时的事物    |
 | upshot    |  [ˈʌpˌʃɑt]    | n.    | 最后结果；结局；结论  |
-| monolithic    |  [ˌmɒnəˈliθik]    | adj.  | 庞大的；整体式的；单一的
+| monolithic    |  [ˌmɒnəˈliθik]    | adj.  | 庞大的；整体式的；单一的  |
 | concatenation     | [kənˌkætəˈneɪʃ(ə)n]   | adj.  | 串联；一系列相关联的事物  |
-| Impersonate   | [ɪmˈpɜrs(ə)nˌeɪt] | v.    | 冒充；扮演；假扮
-| scalability   | [skeɪlə'bɪlɪtɪ]   | n.    | 可扩展性；可伸缩性
+| Impersonate   | [ɪmˈpɜrs(ə)nˌeɪt] | v.    | 冒充；扮演；假扮  |
+| scalability   | [skeɪlə'bɪlɪtɪ]   | n.    | 可扩展性；可伸缩性    |
 | bolster   |[ˈboʊlstər]| v.    |改善，加强    |
+| asterisk  | [ˈæstərɪsk]   | n.    | 星号  |
+|   ||v.    | 标注星号  |
+| multiplex | [ˈmʌltɪˌpleks]    | adj.  | 多样的；多路复用的    |
+|||n.   | 多路；多厅影院    |
+|||v.   | 多路传输  |
+| fidelity  | [fɪˈdeləti]   | n.    | 保真度；忠诚；忠贞    |
+| deferral  |   | n.    | 延期；延迟    |
+| eligible  | [ˈelɪdʒəb(ə)l]    | adj.  | 有资格的；合格的；|
+|||n.   | 合适的人  |
+| departure| [dɪˈpɑrtʃər]   | n.    | 离开；出发；背离  |
+| depict    | [dɪˈpɪkt] | v.    | 描述；描绘；刻画  |
+| versatile | [ˈvɜrsət(ə)l] | adj.  | 多用途的；通用的；多才多艺的  |
+| envision  |  [ɪnˈvɪʒ(ə)n] | v.    | 预想；展望；想象  |
+| interoperable | [ˌɪntər'ɒpərəbl]  | adj.  | 客户想操作的；互通的  |
+| ubiquitous    | [juˈbɪkwɪtəs] | adj.  | 无处不在的；普遍存在的    |
+| anatomy   | [əˈnætəmi]    | n.    | 解剖；解析；剖析  |
+| nudges    | [nʌdʒ]    | n.    | 推动；(温和的)劝说    |
+|||v.   | 轻推；逐步推进    |
+|editorial  | [ˌedəˈtɔriəl] | adj.  | 编者的；主编的；  |
+|||v.   | 社论；期刊的评论；    |
+| fallacy   | [ˈfæləsi] | n.    | 谬误；谬论    |
+| anagram   | [ˈænəˌɡræm]   | n.    | 颠倒字母而成的词句；字谜游戏  |
+| nest| [nest]  | n.    | 嵌套；巢  |
