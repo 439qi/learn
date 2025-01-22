@@ -509,7 +509,7 @@ else expr3;
     - 纯右值(prvalue, pure rvalue)：用于计算或初始化对象的值  
         除字符串字面值之外的字面值、表达式的非引用返回值等  
        特定情况下prvalue会实体化并产生一个临时对象(temporary object)，种类为xvalue
-        >  C++17规定了返回值优化(RVO, retuan value optimization)，纯右值的返回值用作初始化时直接在要初始化的变量上构造或移动构造
+        > C++17规定了返回值优化(RVO, retuan value optimization)，纯右值的返回值用作初始化时直接在要初始化的变量上构造或移动构造
     - 将亡值(xvalue, expiring value):  快要被销毁的值  
         prvalue实体化产生的临时对象、被return的局部变量、`std::move`转换为xvalue
 
@@ -1960,6 +1960,8 @@ copy(in,eos,back_inserter(a));
 ## 多线程
 
 ### 线程
+
+见[note_cpp_thread](note_cpp_thread.md)
 
 ---
 
