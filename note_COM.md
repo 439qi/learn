@@ -1,6 +1,6 @@
-COM
+# COM
 
-# 作用
+## 作用
 
 ### 1. 问题
 
@@ -31,13 +31,13 @@ COM
   对于每一个 COM 类，提供一个工厂类，通过工厂间接创建与删除对象  
   对于每一个 COM 类，必须提供转型函数
 
-# COM 实现
+## COM 实现
 
 ### 1.IUnknown 接口
 
 所有的 COM 类必须继承自 IUnknown 接口
 
-```
+```cpp
 struct IUnknown
 {
     virtual HRESULT STDMETHODCALLTYPE QueryInterface(

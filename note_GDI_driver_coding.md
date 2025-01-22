@@ -1,4 +1,6 @@
-### 具体实现
+# Coding
+
+## 具体实现
 
 1. `plotui/cpsui.c/DefCommonUIFunc`
    > 增加新属性页PROPSHEETPAGE的定义  
@@ -20,7 +22,7 @@
 6. `plotter/mybitmap.h`  `plotter/mybitmap.c`  
    自定义文件，仿C++类，由`mybitmap`结构体维护位图信息、转换灰度图以及写入到文件
 
-### 注意点
+## 注意点
 
 1. 单位换算  
    注意某些函数的参数的单位，大小不对应会调用失败，如`EngEraseSurface`  

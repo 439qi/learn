@@ -35,7 +35,7 @@
 | canonical                  | [kəˈnɑnɪk(ə)l]      | adj.                         | 经典的；标准的；规范的                                     |
 | contiguous                 | [kənˈtɪɡjuəs]       | adj.                         | 相接的；相邻的                                             |
 | mandatory                  | [ˈmændəˌtɔri]       | adj.                         | 强制的；法定的；义务的                                     |
-|                            |                     | n.                           |                                                            | [法]受任者，代理人 |
+|                            |                     | n.                           | [法]受任者，代理人  |
 | colon                      | []                  | n.                           | 冒号；结肠                                                 |
 | qualifier                  | []                  | n.                           | 预选赛；资格赛；合格者；限定词；限定符；修饰符             |
 | futile                     | []                  | adj.                         | 徒劳的；无效的；无益的；轻浮的                             |
@@ -141,9 +141,9 @@
 | glossary                   | [ˈɡlɔsəri]          | n.                           | 词汇表；术语表                                             |<!--new since 2023.10.16 -->
 | pertain   | [pərˈteɪn]    | v.    | 存在；适用；关于；属于    |
 | preset    | [ˌpriˈset]    | v.    | 预设；预置；事先安排；给...预定时间   |
-| precede   | []    | v.    | 先于；在...之前发生；走在..前面；领先；由于   |
+| precede   | [prɪˈsid]    | v.    | 先于；在...之前发生；走在..前面；领先；由于   |
 | inherent  | [ɪnˈherənt]   | adj.  | 固有的；内在的；天生的；  |
-| identical | []    | adj.  | 相同的；完全一样的    |
+| identical | [aɪˈdentɪk(ə)l]    | adj.  | 相同的；完全一样的    |
 | aggregate     | [ˈæɡrɪˌɡeɪt]    | n.  | 合计；总数；  |
 |   |   | v.    | 合计；总计    |
 |   |   | adj.  | 总计的；总数的    |
@@ -171,4 +171,51 @@
 | alphanumeric  | [ˌælfənuˈmerɪk]   | adj.  | 含有字母和数字的；字母和数字并用的    |
 | evict     | [ɪˈvɪkt]  | v.    | 驱逐；逐出；收回  |
 | isomorphic    | [ˌaɪsə'mɔrfɪk]    | adj.  | 同构的；同型的；  |
-| monotonic     | [mɒnəˈtɒnɪk]  | adj.  | 单调的；没有变化的    |
+| monotonic     | [mɒnəˈtɒnɪk]  | adj.  | 单调的；没有变化的    |   <!-- new since 2023.11.27 -->
+| modulo    | ['mɒdjəˌloʊ]  | prep. | 取模  |
+| corridor  | [ˈkɔrɪˌdɔr]   | n.    | 通道；过道；国境线走廊    |
+| permutation   | [ˌpɜrmjʊˈteɪʃ(ə)n]    | n.    | 置换；排列（方式）；组合（方式）|
+| adjacent  | [əˈdʒeɪs(ə)nt]    | adj.  | 邻近的|
+| vowel | [ˈvaʊəl]  | n.    | 元音；元音字母    |
+|   | | adj.    | 元音的    |
+| permute   | [pə'mjuːt]    | v.    | 交换，取代；置换；[数]排列    |
+| placard   | [ˈplæˌkɑrd]   | n.    | 海报；标语牌；广告牌  |
+||| v.   | 在...贴公告；在...贴广告；（用布告等）公布
+| proclaim  | [prəˈkleɪm]   | v.    | 宣告；宣布；表明；声明    |
+| ensue | [ɪnˈsu]   | v.    | 接着发生；因而产生    |
+| subside   | [səbˈsaɪd]    | v.    | 沉降；消退；平息  |
+| directive | [daɪˈrektɪv]  | n.    |指示；命令  |
+||| adj.    | 指示的；指导的|
+| conformance   | [kən'fɔrməns] | n.    | 一致性；遵从；恪守    |
+| pun   | [pʌn] | n.    | 双关；双关语  |
+|||v.| 使用双关|
+| hitherto  | [ˈhɪðərˌtu]   | adv.  | 迄今为止，至今  |
+| niche | [nɪtʃ]    | n.    | 市场定位；商机；舒适或称心的工作、生活；生态位；壁龛；（山体）凹进的地方  |
+| sanction  | [ˈsæŋkʃ(ə)n]  |  n.   | 批准；制裁；处罚  |
+||| v.  | 许可；准许；惩罚  |
+| nominal   | [ˈnɑmɪn(ə)l]  | adj.  | 名义上的；很小的；象征性的；名词性的，名词的    |
+| evangelist    | [ɪˈvændʒəlɪst]    | n.    | 布道者；传教士    |
+| multitude | [ˈmʌltɪˌtud]  | n.    | 人群，群众；众多，大量    |
+| antitrust | [ˌæntiˈtrʌst]    | adj.  | 反垄断的，反托拉斯的  |
+| legislation   | [ˌledʒɪˈsleɪʃ(ə)n]    | n.    | 立法；法规；法律  |
+| misnomer  | [mɪsˈnoʊmər]  | n.    | 用词不当；误用词；误称    |
+| predates  | [ˌpriˈdeɪt]   | v.    | （在日期上）早于，先于    |
+| hoard | [hɔrd]    | v.    | 囤积；贮藏；（尤指）秘藏  |
+|||n.   | （钱、食物、贵重物品等的）贮存；（尤指）秘藏
+| acronym   | [ˈækrəˌnɪm]   | n.    | 首字母缩写词      |
+| militate  | [ˈmɪlɪˌteɪt]  | v.  | 产生作用或影响；妨碍；战斗    |
+| embodiment    | [ɪmˈbɑdɪmənt]    | n.   | 体现；具象化；化身   |
+| baptized  | [bæpˈtaɪz]    | v.  | 施洗；洗礼；受洗  |
+| unidirectional    | | adj.    | 单向的；单向性的  |
+| bidirectional | [ˌbaɪdaɪˈrekʃ(ə)nəl]   | adj.  | 双向的，双向性的    |
+| unsolicited   | [ˌʌnsəˈlɪsɪtəd]   | adj.  | 自发的；未经同意的    |  
+| semaphore | [ˈseməˌfɔr]   | adj.  | 信号量；信号标；旗语  |
+||| n.  | 发信号；打旗语    |
+| nifty | [ˈnɪfti]    | adj.  | 精确的；有技巧的；实用的；漂亮的|
+||| n.  | 俏皮话；漂亮的东西  |
+| auspex    | ['ɔ:spɪsɪz]   | n.    | auspex复数：赞助；主办；（古罗马）鸟兽占卜者
+| preemptive    | [priˈemptɪv]    | adj.  | 抢占式的；[政]先发制人的
+| hierarchy | [ˈhaɪəˌrɑrki] | n.    | 层次体系；阶层；等级制度；统治集团    |
+| poll  | [poʊl]  | n.   | 轮询
+| intervening   | [ˌɪntərˈvinɪŋ]    | adj.  | 介于中间的    |
+| agile     | [ˈæˌdʒəl] | adj.  | 灵活的；敏捷的；机智的    |
