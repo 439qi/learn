@@ -10,14 +10,14 @@
 
 条目由主关键词、可选项关键词和值组成，只有主关键词是必须的
 
-```
+```PostScript
 *Default<main keyword>: <optionn>
 *<main keyword> <option1>: "PostScript language code"
 *<main keyword> <optionn>: "some other PostScript language code"
 *?<query keyword>: "PostScript language query code"
 ```
 
-### 主关键词 main keyword
+## 主关键词 main keyword
 
 - 以`*`开始，`*`之前不允许出现空白符
 - 大小写敏感
@@ -36,7 +36,7 @@
   2. 默认关键词 Default keywords  
      以`*Default`开始，没有可选项关键词，其值部分为可选项关键词的字符串值
 
-### 可选项关键词 option keyword
+## 可选项关键词 option keyword
 
 可选项关键词紧跟在主关键词后，由一个或多个空格分隔
 
@@ -44,7 +44,7 @@
 - 不允许出现破折号`-`、冒号`:`、空格 、制表符、换行符
 - 可选项关键词可以有扩展名，称为限定符，以`.`分隔
 
-### 值 value
+## 值 value
 
 冒号用于分隔关键词和值，冒号和值之间可以出现任意制表符和空格
 
@@ -71,16 +71,16 @@
 5. 空值 NoValue
    - 没有出现可选项关键词，没有出现其他值，仅有主关键词
 
-### PostScript 语言序列 PostScript Language Sequences
+## PostScript 语言序列 PostScript Language Sequences
 
 通常作为调用值出现，有时作为引用值出现（如二进制数据）  
 跨越多行的序列以`*End`结尾
 
 # 结构关键词
 
-### `*OpenUI`、`*CloseUI`
+## `*OpenUI`、`*CloseUI`
 
-```
+```PostScript
 *OpenUI *<main keyword>:PickOne|PickMany|Boolean
 *CloseUI:*<main keyword>
 ```
