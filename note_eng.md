@@ -208,7 +208,7 @@
 | baptized  | [bæpˈtaɪz]    | v.  | 施洗；洗礼；受洗  |
 | unidirectional    | | adj.    | 单向的；单向性的  |
 | bidirectional | [ˌbaɪdaɪˈrekʃ(ə)nəl]   | adj.  | 双向的，双向性的    |
-| unsolicited   | [ˌʌnsəˈlɪsɪtəd]   | adj.  | 自发的；未经同意的    |  
+| unsolicited   | [ˌʌnsəˈlɪsɪtəd]   | adj.  | 自发的；未经请求的；未经同意的    |  
 | semaphore | [ˈseməˌfɔr]   | adj.  | 信号量；信号标；旗语  |
 ||| n.  | 发信号；打旗语    |
 | nifty | [ˈnɪfti]    | adj.  | 精确的；有技巧的；实用的；漂亮的|
@@ -219,3 +219,11 @@
 | poll  | [poʊl]  | n.   | 轮询
 | intervening   | [ˌɪntərˈvinɪŋ]    | adj.  | 介于中间的    |
 | agile     | [ˈæˌdʒəl] | adj.  | 灵活的；敏捷的；机智的    |
+| cyclically    |   | adv.| 周期地  |
+| synonymous    | [sɪˈnɑnɪməs]  | adj.  | 同义的    |
+| pseudo     |  ['sjuːdəʊ]  | adj.    | 假的；虚拟的；冒充的    |
+| miscellaneous | [ˌmɪsəˈleɪniəs]   | adj.  | 混杂的；各种各样的    |
+|   failover    | [ˈfɛlˌoʊvə]   | n.    | [IT]故障切换；故障转移能力
+| hostile   | [ˈhɑst(ə)l]    | adj.  | 敌意的；敌对的；坚决否定的    |
+||| n.  | 敌对分子  |
+| catastrophic  | [ˌkætəˈstrɑfɪk]   | adj.  | 灾难性的；悲惨的  |
