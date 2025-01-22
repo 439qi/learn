@@ -259,3 +259,24 @@
 | fallacy   | [ˈfæləsi] | n.    | 谬误；谬论    |
 | anagram   | [ˈænəˌɡræm]   | n.    | 颠倒字母而成的词句；字谜游戏  |
 | nest| [nest]  | n.    | 嵌套；巢  |
+| lexicographically | | adv.    | 按词典顺序    |
+| citation     | [saɪˈteɪʃ(ə)n]    | n.    | 引证；引述    |
+| ergonomics    | [ɜrɡəˈnɑmɪks]  | n.    | 人体工程学；工效学(研究如何改善工作条件以提升工作效率)    |
+| precedence    | [ˈpresɪdəns]  | n.    | 优先级；优先权    |
+| rationale | [ˌræʃəˈnæl]   | n.    | 基本原理；根本原因；理论基础|
+| deliberate    | [dɪˈlɪb(ə)rət]    | n.    | 深思熟虑；仔细思考|
+|||adj. | 故意的；不慌不忙的；深思熟虑的|
+|defective |[dɪˈfektɪv]|adj.   | 有缺点的；有缺陷的；|
+|||n.   | 次品；有缺陷的人/物|
+| malicious | [məˈlɪʃəs]| adj.  | 怀有恶意的；恶毒的；蓄意的|
+| deem  | [dim] | v.    | 认为；视作；知道  |
+| interoperability  | ['ɪntərɒpərə'bɪlətɪ]| n.  | 互用性|
+| bootstrap |  ['buːtstræp] | adj.  | 自举的；依靠自己力量的；  |
+||| n.  | 自举；拔靴带；  |
+| marshal   | [ˈmɑrʃ(ə)l]   | v.    | [计]封送处理；收集；安排；控制人群 ；维持秩序   |
+||| n.  | (英国的)空军元帅，陆军元帅；司仪；(一些美国城市的)警察局长，消防局长  |
+| proportionate    | [prəˈpɔrʃ(ə)nət]   | adj.  | 成比例的；相应的；相称的  |
+|||v.   | 使成比例；使适应；|
+| traverse | [trəˈvɜrs] | v.    | 穿过；横渡；|
+|||n.   | 可横越的地方|
+|ephemeral  | [ɪˈfem(ə)rəl] | adj.  | 短暂的；瞬息的；|
