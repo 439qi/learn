@@ -280,3 +280,37 @@
 | traverse | [trəˈvɜrs] | v.    | 穿过；横渡；|
 |||n.   | 可横越的地方|
 |ephemeral  | [ɪˈfem(ə)rəl] | adj.  | 短暂的；瞬息的；|
+|cabinet    | [ˈkæbɪnət]    | n.  | 内阁；储藏柜；陈列柜|
+|||n.| 内阁的；小房间用的，玲珑的；细木工做的   |
+| plunder   | [ˈplʌndər]    | n.    | 掠夺；掠夺的财物  |
+|||v.   | 掠夺  |
+| deliberately  | [dɪˈlɪb(ə)rətli]  | adv.  | 有意地，故意地；从容地，不慌不忙地    |
+| impasse   | [ˈɪmˌpæs] | n.    | 僵局；绝境    |
+| elide     | [ɪˈlaɪd]  | v.    | 削减；不考虑；省略    |
+| feasible  | [ˈfizəb(ə)l] | adj.   | 可行的    |
+| orthogonal    | [ɔr'θɒgənəl]  | adj.  | 正交的；直角的；垂直的；（统计学）不相关的    |
+| superfluous   | [sʊˈpɜrfluəs] | adj.  | 过剩的；多余的；不必要的  |
+| glucose   |  [ˈɡluˌkoʊz]  | n.    | 葡萄糖    |
+| contiguity    | [ˌkɒntɪ'ɡjuətɪ]   | n.    | 连续性；接近  |
+| appertain | [ˌæpərˈteɪn]  | v.    | 属于；与...有关   |
+| conduit   | | n.  | 导管|
+| plumb | [plʌm]    | n.    | 垂直；铅锤|
+|||v.   | 探索；钻研|
+||| adv.    | 恰恰；正好；完全，彻底    |
+||| adj.    | 垂直的；公正的；完全的    |
+| plumbing |[ˈplʌmɪŋ] | n.    | 管路系统；水暖工的工作  |
+||| n.  | plumb 现在分词    |
+|circumvent | [ˈsɜrkəmˌvent]    | v.    | 规避，设法回避；绕过；绕行    |
+| lengthy   | [ˈleŋθi] |adj. | 冗长的；漫长的；很长的|
+| coordination  | [koʊˌɔrdɪˈneɪʃ(ə)n]   | n.    | 协调；配合；协作的能力    |
+| allude    |[əˈlud]    | v.    | 暗指；(委婉地)提到    |
+| refine    | [rɪˈfaɪn] | v.    | 精炼；改进；改善；提纯；  |
+| notation |  [noʊˈteɪʃ(ə)n]    | n.    | 记谱法；标记法；  |
+| snippet   | [ˈsnɪpət] | n.    | (消息,知识等)的片断；零星的东西；小片断 |
+| stumble   | [ˈstʌmb(ə)l]  | v.    | 绊倒；跌跌撞撞地走；踌躇；说不出话来    |
+|||n.   | 绊倒；过失；失败  |
+|hypothetical |[ˌhaɪpəˈθetɪk(ə)l]   | adj.  | 假设的；假定的；  |
+| pedantic  |[pəˈdæntɪk]    | adj.  | 迂腐的；学究气的|
+| axiom | [ˈæksiəm] | n.    | 公理；定理    |
+| designate | [ˈdezɪɡnət]   | v.    | 指定；指派|
+|||adj. | (已受委派)尚未上任；(已当选)尚未就职  |
