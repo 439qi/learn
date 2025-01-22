@@ -22,7 +22,7 @@
 | preempt                    | [priˈempt]          | v.                           | 抢占；取代                                                 |
 | instantiate                | [ɪns'tænʃɪeɪt]      | v.                           | （instance 的动词形式）实例化                              |
 | premature                  | [ˌpriməˈtjʊr]       | adj.                         | 过早的；不成熟的；仓促的                                   |
-| duplex                     | [ˈduˌpleks]         | n.                           | 复式房屋；连体房屋；duplex printing，双面打印              |
+| duplex                     | [ˈduˌpleks]         | n.                           | 复式房屋；连体房屋；duplex printing: 双面打印              |
 | manual                     | [ˈmænjuəl]          | n.                           | 说明书；指南；使用手册                                     |
 |                            |                     | adj.                         | 手动的；手工的；体力的；manual feed 手动送纸               |
 | convention                 | [kənˈvenʃ(ə)n]      | n.                           | 习俗；管理；协定；大会；会议；公约                         |
@@ -227,3 +227,12 @@
 | hostile   | [ˈhɑst(ə)l]    | adj.  | 敌意的；敌对的；坚决否定的    |
 ||| n.  | 敌对分子  |
 | catastrophic  | [ˌkætəˈstrɑfɪk]   | adj.  | 灾难性的；悲惨的  |
+| commence  | [kəˈmens] | v.    | 开始，开始发生；着手开始做  |
+| temporal  | [ˈtemp(ə)rəl] | adj.  | 时间的；世俗的；现世的    |
+|||n.   | 太阳穴；世俗的权力；一时的事物    |
+| upshot    |  [ˈʌpˌʃɑt]    | n.    | 最后结果；结局；结论  |
+| monolithic    |  [ˌmɒnəˈliθik]    | adj.  | 庞大的；整体式的；单一的
+| concatenation     | [kənˌkætəˈneɪʃ(ə)n]   | adj.  | 串联；一系列相关联的事物  |
+| Impersonate   | [ɪmˈpɜrs(ə)nˌeɪt] | v.    | 冒充；扮演；假扮
+| scalability   | [skeɪlə'bɪlɪtɪ]   | n.    | 可扩展性；可伸缩性
+| bolster   |[ˈboʊlstər]| v.    |改善，加强    |
