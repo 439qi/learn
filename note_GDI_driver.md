@@ -8,7 +8,7 @@
 
 ## GDI 打印机驱动程序架构
 
-驱动程序的安装最终结果其实就是对系统的两个永久性更改：
+驱动程序的安装最终结果是对系统的两个永久性更改：
 
 1. 描述驱动程序的系统注册表项，包括驱动程序的卸载顺序以及任何正确的配置资料
 2. 驱动程序文件被复制到一个合适的系统目录中
@@ -68,14 +68,14 @@ GDI 与打印相关的功能主要有三个方面
      > 如驱动安装、升级，打印机添加、连接等
 
 - 打印机属性表页
-  - 实现`DrvDevicePropertySheets`函数来创建特定于打印机的属性表页  
+  - 实现 `DrvDevicePropertySheets` 函数来创建特定于打印机的属性表页  
     打开打印机属性页时也会调用`DrvDocumentPropertySheets`???  
 
-  - 实现`DrvDocumentPropertySheets`函数来创建文档特定的属性表页
+  - 实现 `DrvDocumentPropertySheets` 函数来创建文档特定的属性表页
     该函数会被多次调用。
 
-    - 当参数`pPSUIInfo`为`NULL`时  
-      spooler 直接调用该函数，此时参数`lParam`为`DOCUMENTPROPERTYHEADER`结构体指针，若其`fMode`成员为 0，仅需要返回自定义 DEVMODE 的字节数，否则根据`fMode`执行相应操作  
+    - 当参数 `pPSUIInfo` 为 `NULL` 时  
+      spooler 直接调用该函数，此时参数 `lParam` 为 `DOCUMENTPROPERTYHEADER` 结构体指针，若其 `fMode` 成员为 0，仅需要返回自定义 DEVMODE 的字节数，否则根据`fMode`执行相应操作  
       其中，当`fMode`为`DM_IN_BUFFER`或`DM_MODIFY`时（在属性页显示之前），需要将`fdmIn`指向的`DEVMODE`的内容复制到自定义的 DEVMODE 结构体中；当为`DM_OUT_BUFFER`或`DM_COPY`时（在属性页显示之后），需要将自定义的 DEVMODE 结构体中的内容拷贝到`fdmOut`指向的`DEVMODE`中
 
     - 当参数`pPSUIInfo`不为`NULL`时  
