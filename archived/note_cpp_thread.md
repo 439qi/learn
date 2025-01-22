@@ -77,6 +77,23 @@ fu.get();
 `future` 由消费者持有，通过 `future::get()` 获取生产者设置的值  
 `future::get()` 将阻塞当前线程直至对应的 promise 已设置值  
 
+#### 获取 future 状态
+
+- `future::valid()` 指示 `future` 是否合法  
+    只有 `std::promise::get_future()`, `std::packaged_task::get_future()`, `std::async()` 返回的 `future` 且尚未调用 `future::get()` 和 `future::share()` 时为 `true`  
+
+- `future::wait()` 将阻塞至结果可用  
+  std::promise::get_future(), std::packaged_task::get_future() or std::async()  
+
+- `future::wait_for()` 接受一个 `std::chrono::duration` 作为参数，在指定时间段之后或结果可用时返回，结果为以下三者之一
+    |constant|explanation|
+    |-|-|
+    |`future_status::deferred`| 持有 `promise` 的对象仍未开始执行|
+    |`future_status::timeout` |执行已超时|
+    | `future_status::ready`| 结果已就绪  |  
+
+- `future::wait_until()` 类似 `wait_for()`，不过其参数为指定的时间点  
+
 ### shared_future()
 
 对于需要多个线程共享 `future` 的情况，通过 `future::share()` 返回 `std::shared_future`
@@ -134,7 +151,7 @@ std::async(std::launch::async|std::launch::deferred, func_ptr);
 
 ### 潜在问题
 
-- 退化为同步操作  
+- 特定情况下退化为同步操作  
 如果 `std::async()` 返回的 `future` 没有被移动、或绑定到引用上，则这个临时 `future` 对象的析构函数将一直阻塞直到异步操作完成，退化为同步操作  
 
   ```cpp
@@ -142,9 +159,39 @@ std::async(std::launch::async|std::launch::deferred, func_ptr);
   func_2();//直到上一行的func_1()返回，才会执行到func_2()
   ```
 
+  > 本质上因为 `std::async()` 返回的 `future` 的最后一个实例(如果调用了 `future::share()` )的析构函数将会阻塞  
+  > `future` 的析构函数当且仅当如上情况时才会阻塞
 - 无法创建分离的线程  
   同上，由于 `future` 析构函数的原因，`std::async` 创建的线程的生命周期必然短于 `future` 对象(因为该线程返回值对应 `future` 获取的值)  
 
 - 破坏异常现场  
   `std::async()` 将会捕获所有异常并保存到 `future` 中，直到通过 `future` 取值时再抛出  
   由于异常不携带栈信息，导致无法获取异常实际发生时的上下文  
+
+## std::atomic
+
+`std::atomic` 是模板类，一个模板类型为 T 的原子对象中封装了一个类型为 T 的值
+
+```cpp
+template<class T> struct atomic;
+```
+
+原子类型对象的主要特点就是从不同线程访问不会导致**数据竞争**(data race)  
+因此从不同线程访问某个原子对象是**良性**(well-defined)行为
+
+### atomic 基本方法
+
+- store()  
+  修改被封装的值
+- operator T()  
+  在类型转换时被调用，确保类型转换线程安全  
+- exchange()  
+  读取并修改被封装的值，将封装的值修改为指定值并返回原先值  
+- compare_exchange_weak()  
+  比较被封装的值与参数1是否**二进制相等**，若相等则将其修改为参数2，否则将参数1修改为被封装的值  
+
+### atomic 特化方法
+
+atomic 针对整形和指针的特化版本，新增了算术运算和逻辑运算操作
+
+## std::once_flag, std::call_once

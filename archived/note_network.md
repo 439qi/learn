@@ -3,7 +3,9 @@
 [互联网协议入门（一）](https://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)  
 [HTTP协议入门](https://www.ruanyifeng.com/blog/2016/08/http.html)  
 [TCP协议详解](https://zhuanlan.zhihu.com/p/64155705)  
-[HTTP](https://developer.mozilla.org/zh-CN/docs/Web/HTTP)
+[HTTP](https://developer.mozilla.org/zh-CN/docs/Web/HTTP)  
+[What is an IPv6 address? [Fully explained]](https://www.cloudns.net/blog/what-is-an-ipv6-address/)  
+[任播研究综述](https://www.jos.org.cn/html/2023/1/6435.htm)
 
 ## Layer
 
@@ -25,7 +27,8 @@ ARP协议
 规定网络地址，区分不同计算机是否属于同一子网络  
 作用是允许不同子网的任意计算机之间传输数据  
 
-IP协议
+IPX 协议（对于大型网络如互联网支持较差，随着 TCP/IP 的流行而逐渐式微）  
+IP 协议(IPv4, IPv6)
 
 ### 传输层
 
@@ -57,6 +60,44 @@ POP3
 > 1500字节的设计是基于传输距离标准要求下协议使用的时钟同步  
 > 同一个信号包的传输时长随传输距离增加而增加，而时钟同步信号必须在固定时隙中发出，为保证时隙固定必须限制 MTU 大小
 >
+
+## IPv6
+
+网络层协议  
+当两个对应的 IP 地址互相识别后，才能在之间建立路由从而通信
+
+### IPv6 地址规格
+
+IPv6 地址为 128 二进制位数字，其中每16位为一组，共8组，组间用冒号分隔  
+
+其中，组内可省略高位0，组间全为0的组可省略为双冒号 ::
+
+```ipv6
+AF02:0000:0000:0000:0000:0000:0000:0002
+AF02:0:0:0:0:0:0:2
+AF02::2
+```  
+
+### IPv6 地址类型
+>
+> RFC4291  
+
+- **单播**(unicast)  
+  寻址时，发送方与接收方 1:1 关联
+  在单播下，网络中的每一个节点都有**唯一**的 IP 地址，
+- **选播/任播**(anycast)  
+  寻址时，发送方与接收方 1:1(1 of N) 关联  
+  Anycast 网络中的节点在公开网络上宣告相同的 IP 地址，发送方请求通过 BGP 协议路由到任一最近的节点
+
+  在 IPv4 中，任播与单播共用地址池  
+  在 IPv6 中，任播以特殊格式区分
+- **多播/组播**(multicast)  
+  寻址中，发送方与接收方之间 1:N 或 N:N 关联  
+  在一个单一的传输中，数据报被同时发送给多个收件人  
+- **广播**(broadcast)  
+  IPv6 不支持  
+  广播特性由多播实现
+
 ## TCP
 
 基于 Ethernet 和 IP 协议的传输层传输协议  
@@ -111,6 +152,11 @@ TCP连接的端点称作**套接字/插口**(socket)
 
 RFC793 将其定义为$$socket=[IP地址]:[端口号]$$  
 TCP 连接由两个 socket 所确定$$connection=\{socket1,socket2\}$$
+
+建立连接分为两个部分：通知对方自己已经准备就绪 和 确认已接受到对方的通知  
+
+对于握手，双方尚未开始发送数据，因而服务端接收到连接请求后可以立即就绪，对客户端连接请求的确认和就绪通知可以合并为一个报文段，共三次握手  
+对于挥手，服务端接收到断开连接请求后可能还有数据需要发送，因而先发送对断开连接请求的确认，待剩余数据发送完毕后再发送断开连接就绪的通知，共四次挥手
 
 #### 建立连接/握手
 
@@ -360,12 +406,14 @@ mime 不区分大小写
     |OPTIONS| 允许客户端查看服务器性能  |
     |CONNECT||
     |TRACE| 回显服务器收到的请求，用于测试  |
+
 - 请求 URL
 - HTTP 版本
 
 ##### 请求头
 
 描述客户端配置信息
+
 |Index|Header|Description|Example|
 |-|-|-|-|
 |1| Accept |指定客户端能够接收的内容类型|Accept: text/plain, text/html  |
@@ -406,7 +454,7 @@ mime 不区分大小写
 
 ##### 响应头
 
-类似于[请求头](#请求头)
+格式类似于[请求头](#请求头)
 
 ##### 响应体
 

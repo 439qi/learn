@@ -57,3 +57,11 @@ struct IUnknown
 - `QueryInterface`  
   转型接口  
   对于每一个 COM 类都有一个唯一的 GUID 值，QueryInterface 的 rrid 参数即为要转换为的类的 GUID，转换后的对象由第二个参数带回
+
+## 2. 引用计数
+
+## 3. QueryInterface
+
+## 4. marshaling
+
+## 5. 聚合(aggregation)

@@ -43,7 +43,7 @@ let mut var = 5;
 
 无 `mut` 修饰的变量为不可变变量，一旦绑定值后就不能改变  
 
-将本身无需改变的变量声明为不可变会避免一些多余的 runtime 检查
+将本身无需改变的变量声明为不可变会避免一些多余的 runtime 检查  
 
 ### 1.1 **隐藏**(Shadowing)  
 
@@ -59,8 +59,20 @@ const VALUE: u32=1;
 ```
 
 常量不同于不可变变量，通过 `const` 关键字声明且必须注明数据类型  
-其值必须为编译期可计算值
-
+其值必须为编译期可计算值  
+> [!summary]
+> 常量在整个程序运行期间无法改变或重新绑定  
+> 不可变变量无法改变，但可以重新绑定  
+> ✔ 如下程序是合法的  
+> ```rust
+> let a = 123;
+> let a = 456;
+> ```
+> ❌ 但如下程序是非法的  
+> ```rust
+> const a:i32=123;
+> let a = 456;
+> ```
 ## 3 数据类型
 
 Rust 为**静态类型**(statically typed)语言，变量类型必须在编译期可知  
@@ -72,6 +84,7 @@ Rust 数据类型分为两类：**标量**(scalar)和**复合**(compound)
 Rust 有4种基本标量类型  
 
 1. 整型  
+
     |长度|有符号|无符号|
     |-|-|-|
     |8bit|i8|u8|
@@ -90,12 +103,14 @@ Rust 有4种基本标量类型
         也允许以 `_` 为分隔符增加可读性，形如 `1_000`  
 
         字面值默认为十进制，对于其他进制，允许如下表示方法  
+
         |进制|例子|
         |-|-|
         |Hex|0xff|
         |Octal|0o77|
         |Binary|0b1111|
         |Byte(u8)|b'A'|
+
 2. 浮点型  
     浮点型分为 f32 和 f64，默认为 f64  
     浮点数采用 IEEE-754 标准  
@@ -381,6 +396,7 @@ for num in (1..4).rev()
 
 底层是隐式地通过[迭代器](#14-迭代器)实现的  
 因而对于未实现 `Copy` trait 的类型元素，通过所有权遍历之后，该集合便不可再使用
+
 |syntax| equivalent syntax|ownership|
 |- |- |-|
 |for i in col | for i in col.into_iter()| 转移所有权|
@@ -580,9 +596,12 @@ match val
 
     当离开作用域时，`str1` 已无效，仅为 `str2` 调用 `drop()` 函数
 - 深拷贝  
-    Rust深拷贝必须显式使用 `clone()` 函数
-- 拷贝  
-    对于栈内存，直接拷贝
+    Rust 堆上内存的深拷贝必须显式使用 `clone()` 函数
+- 直接复制  
+    对于编译时已知大小的类型被整个存储在栈上，栈内存直接复制
+
+特别地，对于实现了 `Copy` trait 的类型，其复制方式将为深拷贝
+> 若一个类型或其部分实现了 `Drop` trait，则编译器禁止实现 `Copy` trait
 
 ### 7.2 所有权与函数
 
@@ -637,17 +656,20 @@ let hello=&s[0..5]
 
 Rust 管理代码的组织，包括哪些内容可以被公开，哪些内容作为私有部分，以及程序每个作用域中的名字的功能统称为**模块系统**(module system)  
 
-### 8.1 crate
+### 8.1 包 package/项目 project
 
-crate是Rust编译时的最小代码单位，crate可以包含定义在其他文件的模块  
-crate有两种形式：可被编译为可执行程序的二进制项、以及库  
-**crate根节点**(crate root)指模块树的根节点，对于二进制crate为 `main.rs`，对于库crate为 `lib.rs`
+**包**(package)是提供一系列功能的一个或多个 crate  
+其中包含一个 Cargo.toml 文件描述如何构建 crate  
+package 中至少包含一个 crate，其中至多一个库 crate，以及任意个二进制 crate
 
-### 8.2 包
+每个 package 的 module tree 与文件结构没有必然联系，必须显式指明  
+初始情况下，module tree 中仅有 `main.rs` 或 `lib.rs`  
 
-**包**(package)是提供一系列功能的一个或多个crate  
-包包含一个Cargo.toml文件描述如何构建crate  
-包中至少包含一个crate，其中至多一个库crate，以及任意个二进制crate
+### 8.2 crate
+
+crate 是 Rust 编译时的最小代码单位，crate 可以包含定义在其他文件的模块  
+crate 有两种形式：可被编译为可执行程序的二进制项、以及库  
+**crate 根节点**(crate root)指模块树的根节点，对于二进制 crate 为 `main.rs`，对于库 crate 为 `lib.rs`
 
 ### 8.3 模块  
 
@@ -979,6 +1001,61 @@ enum Option<T>{
     }
     ```
 
+## 12. 宏
+
+Rust 中的宏会展开为 AST (abstract syntax tree， 抽象语法树)，而非直接替换成源码  
+
+```rust
+macro_rules! macro_name
+{
+    ()=>(
+        //do sth
+    )
+}
+```
+
+### 12.1 模式与指示符
+
+宏的参数使用 `$` 为前缀，通过指示符(designator)注明类型  
+
+```rust
+maco_rules! func{
+    ($func_def: ident)=>
+    (
+        fn $func_def(){
+            //do sth
+        }
+    )
+}
+```
+
+可用指示符如下所示：
+
+- block
+- expr 表达式
+- ident 变量名或函数名
+- item
+- literal 字面常量
+- pat 模式
+- path
+- stmt 语句
+- tt 标记树
+- ty 类型
+- vis 可见性描述符  
+
+### 12.2 宏重载
+
+```rust
+macro_rules! func{
+    ($left: expr; and $right: expr)=>(
+        //do sth
+    );//; 不同重载必须以 ; 结尾
+    ($left: expr; or $right: expr)=>(
+        //do sth
+    );
+}
+```
+
 ## 10. 生命周期
 
 Rust 中的所有**引用**都有一个**生命周期**(lifetime)，表明该引用所指向变量的作用域范围  
@@ -1003,7 +1080,15 @@ Rust 中的所有**引用**都有一个**生命周期**(lifetime)，表明该引
 此处标注指示编译器返回值的生命周期小于等于相同标注的参数  
 
 ```rust
-fn longer<'a>(x: &'a str, y: &'b str) -> &'a str {
+fn longer<'a, 'b>(x: &'a str, y: &'b str) -> &'a str {
+    //do sth;
+}
+```
+
+下方代码表明 `'b` 的生命周期大于等于 `'a`
+
+```rust
+fn longer<'a, 'b: 'a>(x: &'a str, y: &'b str)->&'astr{
     //do sth;
 }
 ```
@@ -1240,6 +1325,8 @@ let my_closure = |capture_virable: i32|->i32{
 
 指闭包将捕获的变量如何存储在匿名结构体中  
 
+闭包会通过函数体内容自动推断捕获哪些变量  
+
 闭包通过三种方式捕获其环境，按优先级为
 
 1. 不可变引用
@@ -1325,12 +1412,105 @@ pub trait Iterator{
 
 `Iterator` trait 定义了将迭代器转换为不同类型迭代器的方法，称为**迭代器适配器**(iterator adaptors)  
 
-## 线程
+## 标准库
 
-调用 `std::thread::spawn()` 并传递一个闭包以创建线程
+### 智能指针
+
+Rust 智能指针通过结构体实现，并实现了 `Deref` 和 `Drop` trait
+
+#### Box\<T\>
+
+```rust
+let b = Box::new(5);
+```
+
+#### Deref trait
+
+#### Drop trait
+
+```rust
+pub trait Drop
+{
+    fn drop(&mut self);
+}
+```
+
+等价于析构函数，在对象离开作用域时自动调用  
+
+### 线程
+
+```rust
+use std::thread;
+```
+
+Rust 标准库使用1:1的线程实现，每一个语言级线程对应着一个系统级线程  
+
+#### 线程创建
+
+- 调用 `std::thread::spawn()` 并传递一个闭包以创建线程
 
     ```rust
     std::thread::spawn(||{
     //do sth;
     });
     ```
+
+- `join` 等待线程结束
+
+    ```rust
+    let handle = thread::spawn(||{
+        thread::sleep(Duration::from_millis(1));
+    });
+    handle.join().unwrap();
+    ```
+
+- `move` 闭包
+
+#### 线程通信
+
+信道通信类似于单所有权，一旦一个值被传送到信道中，发送者将无法再使用  
+共享内存类似于多所有权，索格现场可以同时访问相同的内存位置，但这会增加额外的复杂性
+
+##### 消息传递
+
+Rust 线程通过**信道**(channel)来进行**消息传递**(message passing)，以实现线程间的通信
+
+- 创建多生产者，单消费者信道
+
+    ```rust
+    let (tx, rx) = std::sync::mpsc::channel;
+    thread::spawn(move||{
+        tx.send(1).unwrap();
+    });
+
+    let recv_val = rx.recv().unwrap();
+    ```
+
+    其中，`tx` 为**发送者**(transmitter)，`rx` 为**接收者**(receiver)  
+
+    `send()` 方法返回值为 `Result<T, E>` 类型，若接收端已被丢弃，则发送失败  
+    `send()` 方法会获取参数所有权至接收者，以避免数据竞争问题  
+
+    `recv()` 方法会阻塞接收者所在线程直至从信道中接受一个值  
+    `try_recv()` 方法会立即返回，若有消息则返回 `Ok`，否则 `Err`
+
+    ```rust
+    let tx1 = tx.clone();
+    ```
+
+    通过克隆发送者以创建多个生产者
+
+##### 共享内存并发
+
+Rust 通过**互斥锁**(mutex)来进行共享内存通信
+
+```rust
+let m = std::sync::Mutex::new(5);
+{
+    let mut num = m.lock().unwrap();
+    *num = 6;
+}
+```
+
+`lock()` 方法会阻塞当前线程直至拥有锁  
+其返回值为 `MutexGuard` 的智能指针，当离开作用域时会调用 `Drop()` 释放锁

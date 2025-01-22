@@ -1,0 +1,3 @@
+div.nav-folder-title[data-path$="res"] {
+    display: none;
+}
