@@ -69,7 +69,7 @@
 
 ## hostfont 注册表项
 
-NOT FINISHED
+NFY
 
 ## Pscript 支持的转义
 

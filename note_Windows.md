@@ -1,6 +1,7 @@
 
 <!-- 2023.07.25 created-->
 <!-- 2023.10.12 format corrected-->
+<!-- 2023.12.26 add Unicode -->
 # note for windows programming
 
 ## 一、开始
@@ -81,7 +82,8 @@ ___
 
 ### 字符集简史
 
-___
+Windows 自NT之后，系统内部使用[Unicode字符集](note_encoding.md/#unicode)  
+Windows NT系统(Windows 2000之前)仅支持UCS-2编码，在Windows 2000之后，支持UTF16
 
 1. ASCII  
    不能很好满足其他语言的需求
@@ -479,7 +481,7 @@ ___
       ```
 
 4. 分辨率
-   **not finished**
+   **NFY**
 5. 色彩  
    Full-Color  
    RGB各8位
@@ -940,7 +942,7 @@ ___
 
    对话框结束后，调用`EndDialog(hDlg, 0);`移交控制权，第二个参数将作为对话框的传回值
 5. 资源描述语法  
-   not finished
+   NFY
 6. 对话框控件  
    对话框通过`SendMessage`与子窗口控件互相通信  
    - 一种简化的方法  
@@ -957,7 +959,7 @@ ___
    `hwndCtrl = GetNextDlgGroupItem(hDlg, hwndCtrl, bPrevious);`  
    获取前一个或后一个Tab键停留项
 8. 自定义对话框控件  
-   需要第九章内容 not finished  
+   需要第九章内容 NFY  
 
 ### 非模态对话框
 
@@ -969,7 +971,7 @@ ___
    - 非模态要么在STYLE叙述中包含`WS_VISIBLE`，要么调用`CreateDialog`后调用`ShowWindow`，否则窗口不会显示  
    - 非模态的消息会先经过程序的消息队列  
    - 非模态使用`DestroyWindow`结束对话框  
-   not finished  
+   NFY  
 
 ### 通用对话框  
 
