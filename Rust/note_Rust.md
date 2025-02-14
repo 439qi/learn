@@ -2,7 +2,9 @@
 title: Rust
 tags:
   - TBD
+  - rust
 ---
+> [!cite]- References
 > [Rust官方教程](<https://doc.rust-lang.org/book/>)  
 > [Rust语言圣经](https://github.com/sunface/rust-course)
 ## Cargo
@@ -36,6 +38,7 @@ edition = "2021"
 [dependencies]
 ```
 
+> [!note] cargo install [crate] --vers [version]  
 ## 1 变量和可变性
 
 ```rust
@@ -104,13 +107,13 @@ Rust 有4种基本标量类型
         也允许以 `_` 为分隔符增加可读性，形如 `1_000`  
 
         字面值默认为十进制，对于其他进制，允许如下表示方法  
-		
-		|进制|例子|
-		|-|-|
-		|Hex|0xff|
-		|Octal|0o77|
-		|Binary|0b1111|
-		|Byte(u8)|b'A'|
+        
+        |进制|例子|
+        |-|-|
+        |Hex|0xff|
+        |Octal|0o77|
+        |Binary|0b1111|
+        |Byte(u8)|b'A'|
 
 1. 浮点型  
     浮点型分为 f32 和 f64，默认为 f64  
@@ -151,10 +154,10 @@ let (x,y,z)=tup;
 let first=tup.0;
 ```
 
-#### 3.2.2 数组
+#### 3.2.2 数组  
 
 数组长度不可变，其元素类型必须相同  
-数组索引访问通过 `[]`
+数组索引访问通过 `[]`  
 
 ```rust
 let arr: [i32; 3]=[1,2,3];
@@ -368,7 +371,7 @@ loop{
     }
     ```
 
-### 5.3 while循环
+### 5.3 while循环  
 
 ```rust
 let mut num=8;
@@ -466,6 +469,7 @@ match val
     {
         //do sth
     }//else{}, 可省略
+    ```
 
 ## 6 模式匹配
 
@@ -474,7 +478,7 @@ match val
 ### 6.1 可辨驳性
 
 可辨驳模式，可能无法匹配某些可能的值，即匹配可能失败  
-以下场景允许可辨驳模式，但会对不可辩驳模式警告
+以下场景允许可辨驳模式，但会对不可辩驳模式警告  
 
 - match???
 - if let  
@@ -573,7 +577,7 @@ match val
 
     其中 `..` 忽略部分值，但每个模式中仅可出现一次 -->
 
-## 7. 所有权
+## 7. 所有权q
 
 不同于 C++ 手动管理内存，或 Java 的垃圾回收机制，Rust 通过**所有权**(ownership)管理内存
 
