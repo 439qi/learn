@@ -920,13 +920,13 @@ What now>
         **会销毁掉未提交的修改且无法恢复**
 3. 部分重置
 
-    ```shell
-    git reset [<commit_reference>] <file> [--patch]
-    ```
+```shell
+git reset [<commit_reference>] <file> [--patch]
+```
 
-    将指定的提交快照中的<file>内容填充到索引，不会应用到工作目录  
-    指定`--patch`可以选择<file>中的部分修改而非全部修改  
-    由于索引被覆盖，暂存的修改会被取消
+将指定的提交快照中的<file>内容填充到索引，不会应用到工作目录  
+指定`--patch`可以选择<file>中的部分修改而非全部修改  
+由于索引被覆盖，暂存的修改会被取消
 
 4. 重置与检出
     - 不带路径的检出  
@@ -934,6 +934,7 @@ What now>
         `checkout`只会改变`HEAD`自身，而`reset`则是改变`HEAD`所指向的分支指针
     - 带路径的检出  
         等价于`git reset --hard [<branch>] <file>`
+
 
 ### 高级合并(NFY)
 
