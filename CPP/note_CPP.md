@@ -14,7 +14,41 @@ tags:
 在二进制码/汇编层级没有函数的概念，需要通过栈来实现参数传递  
 C++ 标准没有定义栈帧的实现方式，各编译器、处理器、操作系统可能采用不同的建立栈帧的方式  
 
-![](res/stack_frame.png)
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    "gantt": {
+        "useWidth": "10"
+    }
+  }
+}%%
+
+gantt
+    title Stack Frame
+    dateFormat X
+    tickInterval 1day
+
+    section ESP=> 
+    ......    :0, 1
+
+    section    
+    被调用者保存的寄存器现场   : 0, 1
+	临时空间   : 0, 1
+    局部变量2   : 0, 1
+    局部变量1   : 0, 1
+    
+    section EBP=> 
+    调用者的EBP   : 0, 1
+    
+    section  
+    返回地址   : 0, 1
+    实际参数1   : 0, 1
+    实际参数2   : 0, 1
+    实际参数3   : 0, 1
+    调用者保存的寄存器现场  :0, 1
+    ......    :0, 1
+```
 如上图所示，ESP 指示栈顶  
 EBP 为基准指针，从调用者传到被调用者的实参、返回地址、被调用者的局部变量等都能够以该指针为基准偏移得到  
 
@@ -26,7 +60,33 @@ EBP 为基准指针，从调用者传到被调用者的实参、返回地址、�
 
 当 `call B` 调用子函数时，将 EIP 指令指针寄存器的内容压入栈中，即调用者的下一条指令地址，亦即返回地址  
 
-![](res/stack_frame_2.png)
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    "gantt": {
+        "useWidth": "10"
+    }
+  }
+}%%
+
+gantt
+    title Stack Frame
+    dateFormat X
+    tickInterval 1day
+    
+    section ESP=> 
+    返回地址   : 0, 1
+
+	section    
+    实际参数1=12   : 0, 1
+    实际参数2=15   : 0, 1
+    实际参数3=18   : 0, 1
+    调用者保存的寄存器现场  :0, 1
+
+	section EBP=>
+    ......    :0, 1
+```
 控制权转移到被调用者后，首先将调用者的 EBP 指针进栈，随后移动 EBP 指针使其等于当前的 ESP 指针  
 之后为局部变量和中间值分配空间，并按需保存 EBX、ESI、EDI 寄存器内容  
 
