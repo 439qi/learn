@@ -59,6 +59,8 @@
     > introduced in C++17  
 
     用于函数或返回类型，指示编译器该返回值不应被忽略，编译器会发出对应警告  
+	> [!hint] 若明确不需要该返回值，可使用 `std::ignore` 接收返回值以消除警告  
+	
 
     ```cpp
     [[nodiscard]] int f(){return 0;}
@@ -483,7 +485,16 @@ consteval int  g(int a)
 - 数组维数必须为常量表达式（在编译时能求值）
 - 不允许元素为引用的数组
 - 与指针类型的关系:数组名必要时会 转换/退化(decay) 为数组首元素的地址
-  对于 `int a[10];` ，`a`等价于 `&a[0]`
+  对于 `int a[10];` ，`a`等价于 `&a[0]`  
+  
+> [!warning] 对于 `&a[0]`，其为指向数组首元素类型的指针，对于 `&a`，其类型为指向数组的指针  
+> ```cpp
+> int a[5] = {1,2,3,4,5};
+> auto p = &a[0]+1;
+> auto q = &a +1;
+> std::cout<<*p<<std::endl;//2
+> std::cout<<*q<<std::endl;//5之后一个元素的地址，野指针
+> ```
 
 #### vector
 
@@ -615,7 +626,8 @@ POD 类型支持逐字节复制和二进制 I/O
   >
 
 `typedef typename A::type T`  
-此处 `typename` 指示编译器 `A::type` 是类型名而非变量名
+此处 `typename` 指示编译器 `A::type` 是类型名而非变量名  
+标准中规定了形如 `T::MemberType` 这样的 `qualified id` 在默认情况下不是一个类型，而是解释为`T`的一个成员变量 `MemberType`，只有当 `typename` 修饰之后才能作为类型出现  
 
 #### volatile：提示编译器该对象的值可能被编译器未监测的情况下被改变，禁止编译器优化与该对象相关的代码  
 
@@ -1481,18 +1493,20 @@ NFY
 对于函数接口（参数和返回类型）中的全部或者部分类型进行**参数化**(parameterize)而函数体保持不变
 
 - 模板类型参数template type parameter `template <typename T>`
-  `template <class T>`
+  `template <class T>`  
+  
   > `typename` 关键字也用在模板定义中，用于指示编译器其后的 token 是类型而非变量名，详见[编译原理](note_compilers_principles.md)  
   > 如下变量 itr 的声明若缺少 `typename` 则编译器会报错
   > 因为编译器无法推导 ::iterator 是变量还是类型
   >
   > ```cpp
   > template <typename T>
-  > void func(){
+   > void func(){
   >   typename std::map<int, T>::iterator itr;
   > }
   > ```
->
+  
+  
 - 模板非类型参数template nontype parameter  
   `template <int a>`
   `a`代表了一个常量表达式  

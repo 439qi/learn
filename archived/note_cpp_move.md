@@ -1,6 +1,6 @@
-# 移动语义
+# 移动语义  
 
-## 值种类 value categories
+## 值种类 value categories  
 
 任意**表达式**通过两个独立的性质可以划分为三种基本值种类  
 
