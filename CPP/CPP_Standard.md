@@ -49,7 +49,7 @@ tags:
 - std::span
 - std::mem_fn
 - std::jthread
-- std::latch, std::barrier
+- [std::latch](CPP_20/Latch.md), [std::barrier](CPP_20/Barrier.md)
 - function defined inside class/struct/union definition is not implicit inline if attached to a named module
 
 ## C++23
