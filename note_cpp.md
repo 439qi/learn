@@ -1,32 +1,3 @@
-<!-- 2023.07.20 created-->
-<!-- 2023.10.12 add stdcall and cdecl -->
-<!-- 2023.10.13 
-        ifstream::eof read twice last data;
-        exception specification deprecated in c++14
--->
-<!-- 2023.11.10 
-        lvaule&rvalue;
-        universal reference;
-        move and forward;
-        type deduce; 
-        template partial specialiazation;
--->
-<!-- 2023.11.14
-        bug for file stream;
-        lambda;
-        auto pointer;
-        function template;
-        virtual function table;
--->
-<!-- 2024.04.18
-        split thread from note_cpp;
--->
-<!-- 2024.04.30
-        split move semantics from note_cpp;
-        translation unit;
-        data type and layout;
-        concept;
--->
 # note for C++
 
 > C++ Primer 3rd Edition
@@ -46,6 +17,17 @@
 - 函数 function：按逻辑语义分组的语句单元
   返回类型、函数名、参数表、函数体，前三者组成函数原型 `function prototype`
 
+##### 程序数据段  
+
+程序由指令和数据组成，其常见分段如下
+
+|sections| meanings|
+|-|-|
+|.code/.text|代码段，存储编译后的机器指令|
+|.data|数据段，存储全局变量，静态局部变量和常量|
+|.bss(block started by symbol)|存储未初始化的全局变量和静态局部变量，在程序中不占据空间，程序加载到内存时请求加载器预留空间(用于延迟初始化)|
+|.rodata(read-only data)|存储静态常量|
+
 #### 编译器
 
 1. 分析程序代码的正确性  
@@ -54,13 +36,87 @@
 
 2. 转换正确的程序代码（代码生成 code generation）
 
+##### 属性注解 attribute annotation
+
+1. [[fallthrough]]  
+   > introduced in C++17  
+
+    用于 switch 语句，显式指明无需 break 语句，以避免编译器警告
+
+    ```cpp
+    switch(val)
+    {
+      case 1:
+      //do sth
+      [[fallthrough]];
+      case 2:
+      //do sth
+      //break;
+    }
+    ```
+
+2. [[nodiscard]]
+    > introduced in C++17  
+
+    用于函数或返回类型，指示编译器该返回值不应被忽略，编译器会发出对应警告  
+	> [!hint] 若明确不需要该返回值，可使用 `std::ignore` 接收返回值以消除警告  
+	
+
+    ```cpp
+    [[nodiscard]] int f(){return 0;}
+
+    // C++20 required
+    [[nodiscard("some msg")]] int g(){return 0;}
+    ```
+
+3. [[maybe_unused]]  
+    > introduced in C++17  
+
+    用于变量、形参，指示编译器该对象可能不会被使用，以避免编译器警告
+
+    ```cpp
+    void func([[maybe_unused]] int b)
+    {}
+    ```
+
+    旧式的方法为在定义时略去变量名
+
+    ```cpp
+    void func(int){}
+    ```
+
+4. [[deprecated]]  
+    > introduced in C++14
+
+    用于标记变量、函数等，表明该变量、函数等已废弃，调用时编译器会发出警告
+
+    ```cpp
+    [[deprecated]] void f(){}
+    [[deprecated("some msg")]]
+    void g(){}
+    ```
+
+5. [[noreturn]]  
+    > introduced in C++11  
+
+    用于函数，表明其结束后不会将控制流返还给调用方  
+    常用于终止程序的函数，所有分支均抛出异常的函数，无限循环函数等  
+
+    ```cpp
+    [[noreturn]] void f(){ throw "error";}
+    void g[[noreturn]] () {throw "error";}
+    ```
+
 #### 流程控制
 
 - 条件 if
 - 循环（或迭代）
   - while
   - for  
-    `for(auto p:a)`：C++11 自动推导、基于范围的 for 循环  
+    对于 `std::pair<int, int> a[];`，在不同 C++ 标准下:  
+    `for(auto p: a)`：C++11 自动推导、基于范围的 for 循环  
+    `for(auto [val1, val2]: a)`: C++17 结构化绑定的 for 循环  
+    `for(auto [index, val1, val2]: std::views::enumerate(a))`: C++23 ranges 库的 for 循环
 
 #### 预处理
 
@@ -130,6 +186,7 @@ ODR(One Definition Rule): 一个符号可以在其作用域内声明任意次，
   外部链接对于所有翻译单元可见  
 
   非 const 全局变量，全局函数默认为外部链接  
+  局部静态变量  
 - 内部链接  
   仅在声明的翻译单元内可见  
     const 对象，constexpr 对象，typedef 对象，static 对象默认为内部链接  
@@ -162,6 +219,8 @@ using namespace std::filesystem;
     设置当前路径
   - `void copy(const path& from, const path& to);`
     复制文件，该函数首先判断两个路径类型，然后调用对应类型的函数  
+    拷贝时，若上一级目录不存在则会抛异常  
+    若不指定覆盖而目标文件已存在时，抛异常  
     `copy_file`、`copy_symlink`
 
 - `path`类：对路径字符串进行处理  
@@ -197,6 +256,34 @@ using namespace std::filesystem;
 ofstream: 打开文件用于输出  
 ifstream: 打开文件用于输入  
 fstream: 两者均可  
+
+|mode|description|
+|-|-|
+|ios::in| 为输入(读)而打开文件|
+|ios::out |为输出(写)而打开文件|
+|ios::ate |初始位置：文件尾|
+|ios::app |所有输出附加在文件末尾|
+|ios::trunc |如果文件已存在则先删除该文件|
+|ios::binary| 二进制方式|  
+
+以上模式不可任意组合，只可有如下组合
+
+|mode| combination| if already exists| not exist|
+|-|-|-|-|
+|r|in|||
+|w|out, out\|trunc|||
+|a|app,out\|app|||
+|r+|out\|in|||
+|w+|out\|in\|trunc|destroy content||
+|a+||||
+|rb||||
+|wb||||
+|ab||||
+|r+b||||
+|w+b||||
+|a+b||||  
+
+一旦组合中包含 `ios::in` 而没有 `ios::trunc` 或 `ios::app`，则文件必须已存在
 
 1. 关于 `ifstream::eof()`  
    若 `eof()` 放置在循环条件内会导致最后多读取一次，原因在于 `eof()` 检查当前指针是否对应 EOF 标志，但该标志是由读取函数设置的，当读取最后一段数据后再次读取时无法读取，才会在流的末尾添加 EOF 标志  
@@ -246,6 +333,9 @@ fstream: 两者均可
   2. using 指示符 using directive：使命名空间内所有声明可见 `using namespace std;`
   3. using 声明 using declaration：使命名空间中单个声明可见
      `using std::string;`
+
+using 声明将名称引入当前作用域，而 using 指示符将指定的命名空间引入与最近的命名空间同级的作用域  
+在名称查找时会带来一定区别
 
 #### 动态数组
 
@@ -335,6 +425,40 @@ fstream: 两者均可
 - const 为运行时常量，constexpr 为编译时常量
 - 修饰函数时，若返回值不能在编译时求出，则被视为普通函数
 
+对于编译期常量，除非该常量用于条件编译语句，否则尽可能使用 `constexpr` 而非 `#define`
+
+- 类型检查
+- 作用域检查
+- `#define` 是纯文本替换，因而对于每处使用，都会创建一个不同的临时 `const` 常量(不考虑编译器优化)???
+
+#### consteval
+>
+> introduced in C++20
+>
+
+用于函数，比 constexpr 更为严格，要求函数**必须**在编译期可计算，若有参数则调用时必须传入编译期常量
+
+```cpp
+constexpr int f(int a)
+{return a;}
+consteval int  g(int a)
+{return f(a);}//可与 constexpr 函数组合
+```
+
+- if consteval 用于 constexpr 函数中，判断当前是运行时还是编译期  
+  进而允许对编译期和运行时分别进行优化  
+
+  ```cpp
+  constexpr int run()
+  {
+    if consteval{
+      return 1; // compile time
+    }else{
+      return 0; // run time
+    }
+  }
+  ```
+
 #### 引用 reference
 
 - 引用必须初始化且不能改变指向，类比于常指针
@@ -363,7 +487,7 @@ fstream: 两者均可
 - 数组维数必须为常量表达式（在编译时能求值）
 - 不允许元素为引用的数组
 - 与指针类型的关系:数组名必要时会 转换/退化(decay) 为数组首元素的地址
-  对于 `int a[10];` ，`a`等价于 `&a[0]`
+  对于 `int a[10];` ，`a`等价于 `&a[0]`  
 
 #### vector
 
@@ -391,32 +515,112 @@ complex< long double > zero;实部和虚部均缺省为 0, 0 + 0i
 complex< double > purei2( purei ); 用另一个复数对象来初始化一个复数对象
 ```
 
-#### 聚合类型
+#### 聚合类型 aggregate type
 
-> C++20 引入
+聚合类型指数组以及满足特定条件的结构体/类/联合体
+> 即使数组的元素非聚合类型，数组本身的类型也是聚合类型  
 
-数组  
-满足如下条件的结构体、类、联合体  
+对于结构体/类/联合体，要求如下  
 
 - 构造函数  
-  - ~C++11：无用户自定义构造函数
-  - C++11~C++20：无用户提供(即不使用default和delete关键字)、继承或显式的构造函数  
-  - C++20~：无用户自定义或继承的构造函数
-- 无私有或保护的非静态数组成员  
+  - (until C++11) 无用户自定义构造函数
+  - (since C++11, until C++20) 无用户提供(即不使用default和delete关键字)、继承或显式的构造函数  
+  - (since C++20) 无用户声明或继承的构造函数
+
+- 无私有或保护的非静态数据成员  
 - 基类  
-  - ~C++17：无基类
-  - C++17~：无虚基类  
+  - (until C++17) 无基类
+  - (since C++17) 无虚基类  
     无私有或保护继承的直接基类
 - 无虚函数
-- C++11~C++14：无默认初始化器
+- (since C++11, until C++14)非静态数据成员无类内初始化  
+
+聚合类型支持[列表初始化](#初始化列表)
+
+#### POD(plain old data)
+
+> deprecated, 该概念始自 C++98，在 C++11 中被拆分为了[平凡类型和标准内存布局类型](#平凡类型与标准内存布局类型)两个概念  
+
+POD 类型为满足以下额外条件的特殊聚合类型
+
+- 没有用户定义拷贝复制运算符和用户定义析构函数  
+- 非静态成员均为 POD 类型或 POD 元素的数组  
+
+POD 类型占用连续内存，且每个成员的地址按声明顺序递增  
+POD 类型支持逐字节复制和二进制 I/O
+
+#### 平凡类型与标准内存布局类型
+
+1. 平凡类型(Trivial Types)  
+    C++ 中类或结构体满足以下条件时即为平凡类型
+    - 具有平凡构造函数，平凡拷贝构造函数，平凡拷贝赋值运算符，平凡析构函数
+      > 即非用户自定义，由编译器提供或显示指定 `default`
+    - 没有虚函数或虚基类
+    - 基类均为平凡类型
+    - 数据成员均为平凡类型
+
+    平凡类型占用连续的内存空间，成员之间可能存在填充字节以满足字节对齐的要求  
+    平凡类型支持静态初始化且可以二进制复制(`memcpy()`)，但 C 程序不一定能够使用  
+
+2. 标准内存布局类型(Standard Layout Types)  
+    C++ 中类或结构体满足以下条件时即为标准内存布局类型  
+    - 没有虚函数或虚基类
+    - 所有基类为标准内存布局
+    - (until C++23)~~所有非静态数据成员具有相同的访问级别~~  
+    - 所有非静态数据成员类均为标准内存布局
+    - 没有与第一个非静态数据成员类型相同的基类
+    - 满足以下条件之一
+        > 即继承链中仅有一个类有非静态数据成员
+      - 最底层派生类没有非静态数据成员，且具有非静态数据成员的基类最多一个  
+      - 没有含非静态数据成员的基类  
+
+    标准内存布局类型占用连续内存，且内存布局已被充分定义  
+    标准内存布局类型可以在内存中自由复制且 C 程序能够使用
+
+    C++98: C++ 标准仅保证同一**访问块**内部的数据成员内存顺序依照其被定义的顺序，不同访问块之间即使拥有相同访问级别，它们之间的顺序也是依赖于编译器的  
+
+    C++11: C++ 标准保证了相同访问级别的数据成员内存顺序依照其被定义的顺序，但未定义不同访问级别的成员间的顺序  
+
+    C++23 P1847: C++ 标准保证数据成员的内存顺序严格依照其被定义的顺序，因而 C++23 中的标准布局不要求数据成员具有相同访问级别；但仍未定义子类与父类数据成员的内存顺序
+
+    ```cpp
+    struct 
+    {
+      int a,b;
+      private:
+        int c;
+      public:
+        int d,e;
+    }s;
+    ```
+
+    如上代码，在 C++11 之前，仅能保证 &s.a<&s.b 和 &s.d<&s.e，a, b 和 d, e 之间的顺序是未定义的；  
+    在 C++11 后，总是确保 &s.a<&s.b<&s.d<&s.e  
+    在 C++23 后，总是确保 &s.a<&s.b<&s.c<&s.d<&s.e
+
+3. 字面类型  
+    - `void`
+    - 标量类型
+    - 引用
+    - 前三者类型的数组
+    - 具有普通析构函数以及一个或多个 `constexpr` 构造函数，没有移动或拷贝构造函数的类，且其所有非静态数据成员和基类必须是字面类型类型且不可变
+
+    字面类型的内存布局在编译期即可确定
 
 #### typedef：为数据类型引入助记符号
+>
+> deprecated, C++11 后应使用 `using` 定义别名  
+> `using uint unsigned int;`  
 
 `typedef unsigned int uint;`
 
 - typedef 不等于宏
   > 已知 `typedef char* cstring;`对于 `extern const cstring cstr;` `cstr`类型应为 `char* const`
   >
+
+`typedef typename A::type T`  
+此处 `typename` 指示编译器 `A::type` 是类型名而非变量名  
+标准中规定了形如 `T::MemberType` 这样的 `qualified id` 在默认情况下不是一个类型，而是解释为`T`的一个成员变量 `MemberType`，只有当 `typename` 修饰之后才能作为类型出现  
 
 #### volatile：提示编译器该对象的值可能被编译器未监测的情况下被改变，禁止编译器优化与该对象相关的代码  
 
@@ -433,20 +637,21 @@ complex< double > purei2( purei ); 用另一个复数对象来初始化一个复
 空结构体在C中占0字节，C++中占1字节
 
 - 字节对齐  
-  32位系统一次读取4个字节，若一个变量跨越了4的整数倍的内存，则CPU需要访问内存两次，效率较低  
   在编译期进行  
-  
-  结构体中每个成员的相对于结构体起始地址的偏移为其所占空间（即对齐标准）的整数倍  
-  静态结构体存放在全局数据区，不占用结构体空间  
-  若结构体内含有内部结构体，内部结构体起始位置为内部结构体最大成员所占空间的整数倍  
-  结构体内部包含数组时，数组每个元素单独对齐  
-  结构体地起始地址也须为其最大成员所占空间的整数倍  
+  32位系统一次读取4个字节，若一个变量跨越了4的整数倍的内存，则CPU需要访问内存两次，效率较低  
+
+  结构体中每个成员的相对于结构体起始地址的偏移为对齐标准的最小整数倍  
 
 - 字节补充  
-  填充结构体末尾，使结构体所占空间为成员中最大成员所占空间的整数倍，使得结构体之后的变量能够自然地字节对齐  
+  填充结构体末尾，使结构体所占空间为对齐标准的最小整数倍，使得结构体之后的变量能够自然地字节对齐  
   
+对于内置基本类型，默认对齐标准为自身所占空间  
+对于结构体，默认对齐标准为成员中最大成员所占空间
+对于数组，数组每个元素单独对齐  
+静态数据成员存放在全局数据区，不占用结构体空间  
+
 ```cpp
-#pragma pack(2)//指定2字节对齐，最终为指定字节和实际对齐字节取较小值
+#pragma pack(2)//指定2字节对齐，最终为指定字节和默认对齐标准取较小值
 #pragma pack()  //取消指定对齐，按默认对齐
 ```
 
@@ -483,47 +688,19 @@ auto关键字指示编译器从初始化表达式中自动推导变量的类型
   |单个元素|推导为元素类型|推导为元素类型的initializer_list|
   |多个元素| 语法错误 | 推导为推导为元素类型的initializer_list|
 
-#### 数据类型与内存布局
+#### 存储时期
 
-1. 平凡类型(Trivial Types)  
-    C++ 中类或结构体满足以下条件时即为平凡类型
-    - 具有平凡构造函数，平凡拷贝构造函数，平凡拷贝赋值运算符，平凡析构函数
-      > 即非用户自定义，由编译器提供或显示指定 `default`
-    - 没有虚函数或虚基类
-    - 基类均为平凡类型
-    - 数据成员均为平凡类型
+C++ 中数据存在4个存储时期，automatic, static, thread, dynamic  
 
-    平凡类型占用连续的内存空间，成员之间可能存在填充字节以满足字节对齐的要求  
-    平凡类型可以在内存中自由复制，但 C 程序不一定能够使用
-
-2. 标准内存布局类型(Standard Layout Types)  
-    C++ 中类或结构体满足以下条件时即为标准内存布局类型  
-    - 没有虚函数或虚基类
-    - 所有基类为标准内存布局
-    - 所有非静态数据成员具有相同的访问权限
-    - 所有非静态数据成员类均为标准内存布局
-    - 没有与第一个非静态数据成员类型相同的基类
-    - 满足以下条件之一
-        > 即继承链中仅有一个类有非静态数据成员
-      - 最底层派生类没有非静态数据成员，且具有非静态数据成员的基类最多一个  
-      - 没有含非静态数据成员的基类  
-
-    标准内存布局类型占用连续内存，且内存布局已被充分定义  
-    标准内存布局类型可以在内存中自由复制且 C 程序能够使用
-3. 简单旧数据(Plain Old Data)  
-    同时满足平凡类型和标准内存布局类型的类或结构体，以及标量类型，为 POD 类型
-
-    POD 类型占用连续内存，且每个成员的地址按声明顺序递增  
-    POD 类型支持逐字节复制和二进制 I/O
-
-4. 字面类型  
-    - `void`
-    - 标量类型
-    - 引用
-    - 前三者类型的数组
-    - 具有普通析构函数以及一个或多个 `constexpr` 构造函数，没有移动或拷贝构造函数的类。 此外，其所有非静态数据成员和基类必须是字面类型类型且不可变
-
-    字面类型的内存布局在编译期即可确定
+- automatic  
+  栈上数据，在进入作用域时申请内存，离开时自动释放
+- static  
+  [.data/.bss/.rodata](#程序数据段) 段的数据，在程序执行时申请内存，程序结束时释放
+- dynamic  
+  堆上内存，手动申请和释放的内存
+- thread  
+  C++11 引入，由 `thread_local` 修饰的数据  
+  在线程开始时申请内存，线程结束时释放
 
 ### 4.表达式
 
@@ -553,7 +730,9 @@ auto关键字指示编译器从初始化表达式中自动推导变量的类型
 
 #### 初始化列表
 
-[聚合类型](#聚合类型)可以使用初始化列表进行初始化  
+对于初始化列表，会将其转换为 `initializer_list` 类型，若被初始化的对象具有 `initializer_list` 类型的构造函数，则调用该构造函数，否则解构初始化列表，视为不同参数进行构造函数决议  
+
+[聚合类型](#聚合类型-aggregate-type)可以使用初始化列表进行初始化  
 对于数组，按元素顺序初始化；  
 对于类、结构体、联合体：  按照继承顺序的直接基类、按照声明顺序的非静态数据成员  
 
@@ -634,20 +813,99 @@ else expr3;
 
 #### 类型转换
 
-- 隐式类型转换：编译器自动完成，无需程序员介入
+##### 隐式类型转换
 
-  1. 算数转换：二元操作符的两个操作数提升为共同的类型表示结果的类型1）防止精度损失，总是小类型提升为大类型2）小于整形的算术表达式在计算前转换为整型
-  2. 赋值转换：转换为被赋值对象的类型
-  3. 返回转换：转换为函数返回值类型
-- 显式类型转换 explicit type conversion
+  当表达式包含不同内置类型的操作数且不存在显式强制转换时，编译器将使用内置的标准转换来转换其中一个操作数，从而使类型相匹配  
+  
+  隐式转换包括标准定义的转换和用户自定义的转换  
 
-  1. `static_cast`低风险转换，不能用于不同类型指针、引用间的转换，不能用于整型和指针间的转换
-  2. `reinterpret_cast``static_cast` 不能进行的操作，执行按比特复制的转换
-  3. `const_cast`移除 `const` 属性
+  标准定义的转换如下
+
+  1. 整型提升  
+      从一个整型类型转换为更宽的整型类型  
+      如 `short` 到 `int`
+  2. 整型转换  
+      同一个整型类型，有符号和无符号之间的转换  
+      此类转换不会更改数据，仅更改对数据的解释方式  
+  3. 浮点型提升  
+      从一个浮点类型转换为更高精度的浮点类型  
+      如 `float` 到 `double`  
+  4. 浮点转换和整型转换  
+      整型类型与浮点类型之间的相互转换  
+
+  5. 算术转换  
+      在二元运算符表达式中，操作数将先被转换为较宽、较高精度的类型再进行运算  
+      若任一操作数为浮点数，则优先考虑浮点数转换；否则考虑整型提升
+
+  6. 指针转换  
+      指向类的指针可转换为指向基类的指针当且仅当指定的基类可访问且转换不存在二义性  
+      普通函数指针可以转换为 void* 指针，类成员函数指针不可转换
+      > 在64位下普通函数指针为8字节，类成员函数指针为 16 字节，因为其内部保存了函数指针以及 this 偏移值  
+
+      任意非 const 或 volatile 的对象指针可以隐式转换为 void* 指针  
+      数组类型退化为指针  
+
+  7. 引用转换  
+      类的引用可转换为指向基类的引用当且仅当指定的基类可访问且转换不存在二义性  
+  8. 类成员指针转换(静态成员指针除外)  
+      指向成员的指针可转换为派生类成员的指针当且仅当允许反向转换且非虚拟继承时  
+
+  用户自定义转换包括转换构造函数和用户定义转换函数  
+
+  1. 转换构造函数  
+      形如 `T1(T2 a);` 的构造函数即定义了一个从 T2 到 T1 的转换  
+      若添加 `explicit` 限定，则该构造函数不能被用于隐式转换  
+  2. 用户定义转换函数  
+      形如 `operator T2();` 即定义了一个从 T1 到 T2 的自定义转换函数  
+      从 C++11 起，`explicit` 可修饰自定义转换函数，使其无法用于隐式转换(但可用于 if 条件表达式的转换 bool 类型)  
+
+##### 隐式转换序列  
+
+对于需要进行隐式转换的上下文，编译器会生成一个隐式转换序列，一个隐式转换序列**按顺序**包含如下内容  
+
+1. 0或1个由标准转换组成的标准转换序列，称为初始标准转换序列  
+2. 0或1个由非显式用户自定义转换组成的转换序列，称为用户定义转换序列  
+3. 0或1个由标准转换组成的标准转换序列，称为第二标准转换序列  
+
+对于构造函数的参数，第二标准转换序列不适用，以避免无限循环  
+对于从一个非类类型转换到另一个非类类型，仅适用初始标准转换序列  
+
+一个标准转换序列**按顺序**包含如下内容  
+特别地，一个不包含任何标准转换的标准转换序列，即没有发生转换，称之为**恒等转换序列**(identity conversion sequence)，恒等转换序列是任意转换序列的子序列  
+> 恒等转换序列的概念参见集合论中空集的概念
+
+1. 0或1个如下标准转换之一  
+    - 左值到右值转换
+    - 数组到指针转换  
+        由左值或右值的 `N 个 T 类型元素的数组`隐式转换为纯右值的 `T 类型的指针`  
+    - 函数到指针转换  
+        由左值函数类型隐式转换为纯右值的函数指针  
+2. 0或1个数字型提升或转换  
+3. 0或1个函数指针转换(since C++17)  
+    `指向无异常函数的纯右值(成员)函数指针`隐式转换为`可能抛出异常的纯右值(成员)函数指针`  
+    详见 [noexcept](#异常规范-exception-specification)
+4. 0或1个 cv 限定转换  
+    `指向 cv 限定类型 T 的 纯右值指针`隐式转换为`指向更严格 cv 限定类型 T 的纯右值指针`  
+    `指向类 X 中 cv 限定类型成员 T 的 纯右值指针`隐式转换为`指向类 X 中更严格 cv 限定类型成员 T 的纯右值指针`
+
+> 安全 bool 问题  
+> 由于 bool 可隐式转换为数字类型，为一个类型定义 bool 转换函数会带来一些问题，对于 bool 转换函数最好添加 `explicit` 限定
+>
+##### 显式类型转换 explicit type conversion
+
+  1. `static_cast` 低风险转换，转换时不执行运行时检查  
+      通常用于转换数值类型，不能用于不同类型指针、引用间的转换，不能用于整型和指针间的转换  
+  2. `reinterpret_cast` 用于无关类型间的强制转换  
+      执行按比特复制的转换  
+  3. `const_cast`  
+      转换对象的 `const` 属性  
   4. `dynamic_cast`
-     专用于多态基类或引用转换为派生类的指针或引用
-     检查转换安全性 不安全的指针转换返回空指针
-     不安全的引用转换抛出异常
+      用于多态类的指针或引用转换，转换时执行运行时检查  
+      转换后的类型必须为该指针实际指向的对象的基类，即只能向上转换  
+      不安全的指针转换返回空指针  
+      不安全的引用转换抛出异常 `bad_cast`  
+  
+      对于菱形继承的向上转换和向下转换会产生二义性，此时必须分多步转换明确继承链  
 
   - 旧式强制类型转换
     `type (expr);`（C++）或 `(type) expr;`（C）
@@ -1043,69 +1301,135 @@ lambda对象是_cdecl的
 **函数指针要求类型严格一致，不允许隐式转换**
 函数指针与重载函数类型必须一致，由编译器根据形参选择绑定的函数
 
-#### 重载解析
+#### 重载解析/重载决议
+>
+> 原文为 overload resolution  
+> 重载解析应该是从域名解析 domain name resolution 迁移过来的  
+> 决议为直译，目前 cppreference 中文站采用该翻译
+>
 
-##### 1. 确定函数调用考虑的重载函数的集合，确定函数调用中实参表的属性
+函数的标识分为名称和参数，对于 C 语言，其函数名必须唯一  
 
-> 该集合中的函数被称为候选函数candidate function
+C++ 引入了重载函数，在编译期由编译器通过**名称修饰**(name mangling)为每个重载函数生成唯一的名称，一般为名称+参数+额外规则  
+重载决议解决的是从调用时的函数名称对应到名称修饰后的函数
 
-- 候选函数是**在调用点可见**或**在实参类型所在的名字空间中声明**的与被调用函数同名的函数
-- 要确定函数调用中的参数表的属性 即**实参**的数目和类型。
+##### 基本流程  
 
-##### 2. 从重载函数集合中选择一个或多个能够用该调用中指定的实参来调用的函数
+重载决议按如下步骤执行  
 
-> 选出来的函数被称为可行函数viable function
+1. 构建候选函数集  
+2. 修剪候选函数集至可行函数集
+3. 分析可行函数集，从中找出最佳可行函数函数  
 
-- 参数个数与调用的实参表中的参数数目相同；或者可行函数的参数个数多一些 但是每个多出来的参数都要有相关的缺省实参
-- 形参和实参间可以进行隐式转换，等级Rank如下
-  1. 精确匹配exact match
+若决议失败，则报错  
 
-     - 需要最小类型转换仍被视为精确匹配
+##### 名称查找  
 
-       > 前三者称为左值转换，其优于限定修饰转换
-       >
+在该阶段仅进行名称查找，不会对参数等做额外检查  
 
-       1. 左值到右值
-       2. 数组到指针
-       3. 函数到指针
-       4. 限定修饰转换
-          从非常量指针/引用转换到常量指针/引用
-  2. 与一个类型转换匹配
+- 限定名称查找(qualified name lookup)  
 
-     1. 提升
+    通过域解析运算符 `::` 访问的名称(类、命名空间、枚举)  
+    通过类的 `.` 、`->` 访问名称  
 
-        - char,unsigned char,short -> int
-        - float -> double
-        - enum -> int, unsigned int ,long, unsigned long
-        - bool -> int
-     2. 标准转换
+    当 `::` 前无名称单独使用时，将会强制在全局空间下查找并忽略局部空间下的名称
 
-        > 所有标准转换是等价的
-        >
+- 非限定名称查找(unqualified name lookup)  
+  - 非限定名称作用域查找顺序  
+    - 按作用域由内向外查找  
+    - 友元函数中，查找的名称为模板参数时直接在当前作用域查找，否则在友元函数原有作用域查找
+    - 若一个命名空间下的变量在外部重新定义，该定义中涉及的其余名称在该命名空间下查找
 
-        - 整型转换
-        - 浮点转换
-        - 浮点-整形转换
-        - 指针转换
-        - bool转换
-  3. 无匹配no match
+      ```cpp
+      namespace N{
+        int i = 4;
+        extern int j;
+      }
+      int j =2;
+      int N::j = i; //j = 4
+      ```
 
-##### 3. 选择与调用最匹配的函数
+  - 通常非限定查找(usual unqualified lookup)  
+        按照作用域查找顺序，在某个作用域找到声明后便停止查找其他作用域，即使该名称无法成功调用或者后续作用域存在更为匹配的名称  
+  - 实参依赖查找(argument dependant lookup, ADL)  
+        在通常非限定查找失败之后，再在实参的作用域中查找  
+    - 当实参为函数时，ADL 规则会查找函数的参数和返回值所属作用域  
+    - 当实参为类时，ADL 规则会在该类及其父类的最内层命名空间查找，即命名空间嵌套时仅查找最内层忽略外层  
+    - 当实参为类模板时，ADL 规则会在特化类模板参数类型的命名空间下查找  
+            若该模板参数本身也是一个被实例化的模板，则也会被查找模板的模板参数的命名空间，以此递归
+        > 调用名称加上括号或使用别名时 ADL 不会生效  
+        > `(f)(N::j);`  
 
-> 最匹配的函数被称为最佳可行函数best viable function，或最佳匹配函数best match function
+- 模板名称查找
+NFY
 
-- 最佳可行函数适用于如下规则
+##### 重载决议  
 
-  1. 应用在实参上的转换不比调用其他可行函数所需的转换
-  2. 在某些实参上的转换要比其他可行函数对该参数的转换好
-- 转换序列conversion sequence
+1. 将名称查找和模板实参推导的结果构造候选函数集  
+2. 确定可行函数  
+    从重载函数集中确定能够使用指定实参调用的函数集合，称之为**可行函数**(viable function)  
+    令调用函数有 M 个实参，则可行函数需满足如下所有条件  
+    - 有 M 个形参，或形参少于 M 个但有省略号形参，或形参多于 M 个但 M+1 及随后的形参具有默认参数  
+    - 必须满足约束(since C++20)  
+    - 参数类型精确匹配或能够隐式转换到对应类型  
+    - 若形参具有引用类型，则实参需满足引用绑定要求  
+3. 确定最佳可行函数  
+    可行函数 F1 比可行函数 F2 更佳，当 F1 所有实参的隐式转换**不差于** F2 实参的隐式转换，且  
+    1. 至少一个 F1 的实参的隐式转换[**优于**](#隐式转换序列分级) F2 的实参的隐式转换，否则  
+    2. F1 返回值的标准转换序列[**优于**](#隐式转换序列分级) F2 返回值的标准转换序列，否则  
+    3. (since C++11) F1 返回值与其将要绑定到的引用为相同值种类的引用，而 F2 不满足，否则
+    4. F1 是非模板函数而 F2 是特化模板函数，否则
+    5. F1 和 F2 均为特化模板参数但 F1 更为特化，否则
+    6. (since C++20) F1 和 F2 均为非模板函数，但 F1 比 F2 约束更为严格，否则
+    7. (since C++11) F1 为所要求类型的构造函数，F2 为所要求类型的基类的构造函数且两者具有相同实参表，否则
+    8. (since C++20) F2 is a rewritten candidate and F1 is not，否则  
+    9. (since C++20)F1 and F2 are both rewritten candidates, and F2 is a synthesized rewritten candidate with reversed order of parameters and F1 is not，否则  
+    10. (since C++17) F1 由用户定义推导指引生成而 F2 不是，否则  
+    11. (since C++17) F1 是复制推导候选而 F2 不是，否则
+    12. (since C++17) F1 由非模板构造函数生成而 F2 由模板构造函数生成  
 
-  > 构成该序列最坏转换的等级即转换序列的等级
-  >
+    所有可行函数按如上规则两两比较，若有且仅有1个可行函数优于其他所有可行函数，则重载决议成功，该函数为最佳可行函数  
 
-  - 标准转换序列
-    左值转换 —>提升或者标准转换 —>限定修饰转换
+##### 隐式转换序列分级
 
+该小节说明重载决议中确定最佳可行函数时，每个参数隐式转换分级规则  
+首先说明标准转换序列的三种分级，其分级取决于组成它的最差标准转换的分级  
+
+1. **精确匹配**(exact match)  
+  满足以下任一条件  
+    - 无需进行转换
+    - 左值到右值转换
+    - cv 限定转换
+    - 函数指针转换
+    - 转换到相同类型的用户定义转换
+2. **提升**(promotion)  
+  整型提升，浮点型提升  
+3. **转换**(conversion)  
+  整形转换和浮点型转换，浮点型转换，指针转换，成员指针转换，bool 转换，转换到其基类的用户定义转换  
+
+[隐式转换序列](#隐式转换序列)中
+
+1. 标准转换序列总是优于用户定义转换序列  
+2. 用户定义转换序列总是优于省略转换序列(即变长形参)  
+
+3. 标准转换序列 S1 优于标准转换序列 S2，当  
+    1. 不考虑左值到右值转换的情况下，S1 是 S2 的真子序列，否则  
+    2. S1 的分级优于 S2 的分级，否则  
+    3. S1 与 S2 均绑定到一个引用形参而非某个引用限定的成员函数的隐式对象形参，且 S1 绑定右值引用到右值而 S2 绑定左值引用到右值，否则
+    4. S1 与 S2 均绑定到一个引用形参且 S1 绑定左值引用到函数而 S2 绑定右值引用到函数，否则
+    5. S1 与 S2 仅在限定转换步骤有区别，且  
+      (until C++20) S1 结果的 cv 限定是 S2 结果的 cv 限定的真子集  
+      (since C++20) 在 C++20 之后后 S1 的结果可以限定转换为 S2 的结果  
+      否则  
+    6. S1 和 S2 都绑定到仅在顶层 cv 限定性有别的引用形参，而 S1 的类型比 S2 的 cv 限定性更少，否则  
+    7. S1 和 S2 都绑定相同的引用类型"到 T 的引用"，并分别具有源类型 V1 和 V2，且从 V1*到 T* 的标准转换序列优于从 V2*到 T* 的标准转换序列
+4. 用户定义转换序列 U1 优于 用户定义转换序列 U2，当 U1 与 U2 调用同一个构造函数/转换函数，或聚合初始化相同的类，而 U1 的第二标准转换序列优于 U2 的第二标准转换序列，否则
+5. 列表初始化序列 L1 优于 列表初始化序列 L2，当 L1 用于初始化 `std::initializer_list` 而 L2 不是，否则  
+6. 当对应形参为数组引用时，列表初始化序列 L1 优于列表初始化序列 L2，当  
+  (since C++11) L1 被转换为 N1 个 T 元素的数组，L2 被转换为 N2 个 T 元素的数组，而 N1 小于 N2  
+  (since C++20) 当 N1 = N2 时， L1 转换到已知边界数组而 L2 转换到未知边界数组  
+
+当两个转换序列分级相同时，则应用额外规则，详见 [cpp reference](https://en.cppreference.com/w/cpp/language/overload_resolution#Ranking_of_implicit_conversion_sequences)
 
 ### 10. 函数模板（not finished）
 
@@ -1114,9 +1438,22 @@ lambda对象是_cdecl的
 
 - 模板类型参数template type parameter `template <typename T>`
   `template <class T>`
-- 模板非类型参数template nontype parameter
+  > `typename` 关键字也用在模板定义中，用于指示编译器其后的 token 是类型而非变量名，详见[编译原理](note_compilers_principles.md)  
+  > 如下变量 itr 的声明若缺少 `typename` 则编译器会报错
+  > 因为编译器无法推导 ::iterator 是变量还是类型
+  >
+  > ```cpp
+  > template <typename T>
+  > void func(){
+  >   typename std::map<int, T>::iterator itr;
+  > }
+  > ```
+>
+- 模板非类型参数template nontype parameter  
   `template <int a>`
   `a` 代表了一个常量表达式  
+  
+  在 C++17 及之后，非类型参数的类型可以指定为 auto  
 
 #### 简写函数模板
 >
@@ -1193,11 +1530,32 @@ void g(T, auto);//等价于template<typename T, TT> void g(T,TT);
 
 在函数模板的重载决议中会应用此规则：当模板形参在替换成显式指定的类型或推导出的类型失败时，从重载集中丢弃这个特化，而非导致编译失败  
 
-通过该规则可以禁止特定类型的实例，从而限制函数模板参数
+运用该规则可以进行编译期推断
+以下代码判断类型 T 是否具有 "T::func"  
 
-#### 函数模板偏特化(NOT FINISHED)  
+```cpp
+template<typename T>
+struct has_func
+{
+private:
+  template<typename U=T>
+  static auto _Check(...)->std::false_type;
+  template<typename U=T>
+  static auto _Check(int)->decltype(&U::func,std::true_type());
+public:
+  enum{value=decltype(_Check(0))::value};
+};
+```
+
+C++11 引入了 `std::enable_if`，简化了 SFINAE 的使用  
+C++17 引入了 `if constexpr`、类模板自动推导，简化了 SFINAE 模板特化  
+C++20 引入了 [`concept`](#concept)，以取代原本的 `std::enable_if`
+
+#### 函数模板偏特化  
 
 [C++ Templates 2nd](https://github.com/Walton1128/CPP-Templates-2nd--)  
+
+C++ 标准不允许函数模板**偏**特化，因为其与函数重载决议冲突
 
 1. 通过[类模板偏特化](#类模板偏特化partial-specializationnot-finished)
 2. 通过标签分发
@@ -1407,6 +1765,44 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 - mutable 数据成员即使是 const 成员函数、const 类对象中也可以修改
 - 构造函数 constructor
 - 析构函数 destructor
+
+#### 引用限定符
+>
+> introduced in C++11
+
+引用限定符用于非静态成员函数，以限制成员函数的隐式对象形参值种类  
+其中无引用限定与左值引用限定或右值引用限定无法共存  
+不会改变 this 指针的属性，this 指针始终为左值  
+
+```cpp
+class obj{
+public:
+  //void func();  //no ref-qualifier
+  void func()&; //lvalue ref-qualifier
+  void func()&&;  //rvalue ref_qualifier
+}
+```
+
+- 无引用限定  
+  const volatile T& 且额外允许绑定到右值隐含对象实参  
+- 左值引用限定  
+  const volatile T&;
+- 右值引用限定  
+  const volatile T&&;
+
+#### 显式 this 指针 deducing this
+>
+> introduced in C++ 23
+>
+```cpp
+class Cls
+{
+  void Func(this const Cls& self);
+}
+```
+
+this 可以作为显式参数而非隐式参数，成员函数的第一个参数若为 this，则其将作为调用对象  
+this 不再必须为指针形式，也可通过引用或值传递
 
 #### 静态类成员
 
@@ -1633,6 +2029,59 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 2. 选择可行函数
 3. 选择最佳匹配函数
 
+#### 重载模式(overload pattern)
+
+重载模式允许将多个重载函数打包为一个对象，通常用于访问 `std::variant`
+
+```cpp
+std::variant<int, float> val{1};
+std::visit(overload{
+  [](const int& i){},
+  [](const float& f){},
+  },val);
+```
+
+重载模式的 C++17 实现  
+基于以下 C++17 特性
+
+- using 声明引入父类成员函数
+- [用户定义推导指引](#用户定义推导指引user-defined-deduction-guides)
+- [CTAD](#类模板参数自动推导class-template-argument-deduction-ctad)
+
+```cpp
+template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
+template<class... Ts> overload(Ts...) -> overload<Ts...>;
+```
+
+重载模式在 C++17 之前的实现
+
+```cpp
+template <class... Fs>
+struct overload;
+
+template <class First_t, class... Rest_t>
+struct overload<First_t, Rest_t...> : First_t, overload<Rest_t...>
+{
+ overload(First_t f0, Rest_t... rest) : First_t(f0), overload<Rest_t...>(rest...) {}
+
+ using First_t::operator();
+ using overload<Rest_t...>::operator();
+};
+
+template <class First_t>
+struct overload<First_t> : First_t
+{
+ overload(First_t f0) : First_t(f0) {}
+
+ using First_t::operator();
+};
+
+template <class... Fs>
+auto make_overload(Fs... fs)
+{
+ return overload<Fs...>(fs...);
+}
+```
 
 ### 16.类模板
 
@@ -1664,9 +2113,67 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 
 #### 类模板偏特化(partial specialization)(NOT FINISHED)
 
-#### 奇异递归模板(CRTP, Curiously Recurring Template Pattern)  
+模板特化时，可以只指定部分模板参数，称之为模板偏特化  
+一个模板的偏特化本身还是一个模板，使用时其余模板参数必须手动指定或能够通过参数自动推导
 
-把派生类作为基类的模板参数  
+#### 类模板参数自动推导(class template argument deduction, CTAD)
+>
+> since C++17
+>
+
+NFY
+类模板实例化时，部分参数可由编译器根据上下文推导得出而无需显式指定
+
+##### 用户定义推导指引(User-defined deduction guides)  
+
+用户定义推导指引必须命名一个类模板，且在类模板的同一语义范围内被引入(命名空间或封闭类)，且成员类模板必须具有相同的访问权限
+
+推导指引不是函数，也没有函数体，其不会被名称查找找到且不参与重载解析除非推导类模板参数时针对其他推导指南进行重载决策
+
+```cpp
+template<typename T>
+struct container
+{
+  template<typename Iter>
+  container(Iter begin, Iter end);
+}
+
+template<class Iter>
+container(Iter begin, Iter end) -> container<typename std::iterator_traits<Iter>::value_type>;
+
+auto v = std::vector{1,2,3};
+auto d = container(v.begin(), v.end()); //deduces T = double;
+```
+
+#### traits class  
+
+通过模板特化在编译期提取模板参数的信息
+
+以 iterator 和 vector 中的 type_traits 为例，若调用 `func()` 传入 `vector` 为参数，则 `func::value_type` 即为 `vector` 中元素的类型
+
+```cpp
+//<iterator>
+template <typename T>
+struct iterator_traits;
+
+template<> 
+struct iterator_traits<vector<T>>
+{
+  typedef T value_type;
+}
+
+//any template function that requires iterator_traits
+template <typename T>
+void func(T container)
+{
+  typedef typename iterator_trairs<T>::value_type value_type;
+}
+```
+
+#### 奇异递归模板模式(CRTP, Curiously Recurring Template Pattern)  
+
+把派生类作为基类的模板参数，核心在于利用子类的信息来生成代码  
+主要作用为
 
 1. 静态多态
 
@@ -1697,9 +2204,29 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 
     无需虚函数表的内存开销和查表的运行开销  
     代价时无法动态绑定，多了函数转发的开销  
+
+    C++23 引入显式 this 后，可精简如下
+
+    ```cpp
+    class Base
+    {
+      public:
+        template<class Self>
+        void interface(this Self& self)
+        {
+          self.implementation();
+        }
+    }
+    class Derived: public Base
+    {
+      void implementation(){/*do sth*/}
+    }
+    ```
+
 2. 添加方法同时精简代码  
   有多个类存在相同方法，且这些方法可以借助于类的其他方法进行实现时，均可以采用CRTP进行精简代码，将相同的方法抽象到模板父类中
-3. etc.
+3. 颠倒继承(Upside Down Inheritance)  
+    父类向子类添加功能
 
 ### RAII(Resource Acquisition Is Initialization)：使用局部对象管理资源  
 
@@ -2104,3 +2631,52 @@ C++11 共有如下四种互斥量
     - 关闭中断另一种实现方法是  
       关闭中断问题在于对于多核CPU无法处理并发冲突的问题
     - 自旋锁
+<!-- 2023.07.20 created-->
+<!-- 2023.10.12 
+        stdcall and cdecl 
+-->
+<!-- 2023.10.13 
+        ifstream::eof read twice last data;
+        exception specification deprecated in c++14
+-->
+<!-- 2023.11.10 
+        lvaule&rvalue;
+        universal reference;
+        move and forward;
+        type deduce; 
+        template partial specialiazation;
+-->
+<!-- 2023.11.14
+        bug for file stream;
+        lambda;
+        auto pointer;
+        function template;
+        virtual function table;
+-->
+<!-- 2024.04.18 split thread from note_cpp-->
+<!-- 2024.04.30
+        split move semantics from note_cpp;
+        translation unit;
+        data type and layout;
+        concept;
+-->
+<!-- 2024.05.21
+        program sections;
+        attribute annotations;
+        consteval and if consteval;
+        partial specialization;
+        trait class;
+        CRTP;
+-->
+<!-- 2024.08.20 move history to end of file
+        refine std::filesystem; 
+        refine for loop;
+        aggregate type and memory layout;
+        deprecate typedef and replace it with using;
+        refactor type conversion;
+        refactor overload resolution(NFY);
+        overload pattern;
+        C++17 CTAD and User-defined deduction guides(NFY);
+        C++11 ref-qualifier;
+        SFINAE;
+-->
