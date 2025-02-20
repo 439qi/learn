@@ -18,6 +18,9 @@
         function template;
         virtual function table;
 -->
+<!-- 2024.04.18
+        split thread from note_cpp;
+-->
 # note for C++
 
 > C++ Primer 3rd Edition
@@ -1976,6 +1979,7 @@ copy(in,eos,back_inserter(a));
 
 ### 线程
 
+见[note_cpp_thread](note_cpp_thread.md)  
 
 ### 互斥锁
 
