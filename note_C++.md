@@ -11,6 +11,13 @@
         type deduce; 
         template partial specialiazation;
 -->
+<!-- 2023.11.14
+        bug for file stream;
+        lambda;
+        auto pointer;
+        function template;
+        virtual function table;
+-->
 # note for C++
 
 > C++ Primer 3rd Edition
@@ -87,12 +94,75 @@
 
 ### 2. C++浏览
 
+#### filesystem
+>
+> C++17引入
+
+```cpp
+#include<filesystem>
+using namespace std::filesystem;
+```
+
+支持Windows和POSIX系统的文件系统
+
+- 常用函数
+  - `bool exists(const path& pval);`  
+    判断路径是否存在
+  - `path absolute(const path& pval, const path& base = current_path());`
+    返回绝对路径
+  - `path current_path();`  
+    返回当前路径
+  - `void current_path(const path& pval);`  
+    设置当前路径
+  - `void copy(const path& from, const path& to);`
+    复制文件，该函数首先判断两个路径类型，然后调用对应类型的函数  
+    `copy_file`、`copy_symlink`
+
+- `path`类：对路径字符串进行处理  
+    POSIX使用UTF-8编码的`char`字符串存储路径  
+    Windows使用UTF-16编码的`wchar_t`字符串存储路径  
+
+    POSIX系统使用`/`作为目录分隔符  
+    Windows支持`/`和`\`，特定情况下仅支持`\`
+
+    `path`类重载了`/`运算符用于拼接路径  
+
+    对形如`c:/abc/xyz.def.ext`，属性如下
+  - root name: `c:`
+  - root directory: `/`
+  - root path: `c:/`
+  - relative path: `abc/xyz/def.ext`
+  - parent path: `c:/abc/xyz`
+  - filename: `xyz.def`  
+  - stem: `def`
+  - extension: `.ext`
+
+- `directory_iterator`类：用于遍历一个目录下的文件和目录，跳过特殊目录`.`、`..`  
+- `recursive_directory_iterator`类：递归遍历，其余同上  
+- `directory_entry`类：用于描述对`directory_iterator`和`recursive_directory_iterator`解引用返回的对象  
+    存储`path`类型的对象，以及表示文件名状态和文件名符号链接状态的两个`file_type`枚举值
+
+- `file_status`类：封装`file_type`和表示文件权限的`perms`枚举值  
+  可由`directory_entry.status()`取得
+
 #### 文件输入/输出
 
-`#include<fstream>` ofstream:打开文件用于输出 ifstream:打开文件用于输入
+`#include<fstream>`  
+ofstream: 打开文件用于输出  
+ifstream: 打开文件用于输入  
+fstream: 两者均可  
 
 1. 关于 `ifstream::eof()`  
-   若 `eof()`放置在循环条件内会导致最后多读取一次，原因在于 `eof()`检查当前指针是否对应EOF标志，但该标志是由读取函数设置的，当读取最后一段数据后再次读取时无法读取，便会在流的末尾添加EOF标志
+   若 `eof()` 放置在循环条件内会导致最后多读取一次，原因在于 `eof()` 检查当前指针是否对应 EOF 标志，但该标志是由读取函数设置的，当读取最后一段数据后再次读取时无法读取，才会在流的末尾添加 EOF 标志  
+2. `fstream::open()`  
+  缺省情况下默认以文本方式打开  
+  在Unix系统中，文本方式和二进制方式打开没有区别  
+  Windows下文本方式打开时，读时遇到0x0d0a(CRLF)会自动转换为0x0a(LF);写时遇到0x0a(LF)会被自动替换为0x0d0a(CRLF)  
+  **务必在任何情况下都显式指明打开方式**  
+3. `fstream::seekp(), seekg()`  
+  两者分别移动文件写指针和文件读指针，对于 `fstream`，两者为同一个  
+
+    > 对于其他除文件外的其他输入输出流，两者不同  
 
 #### 内存分配
 
@@ -206,6 +276,15 @@
   `const int *const p`
 
 #### constexpr
+>
+> C++11引入
+
+用于定义常量表达式，声明编译时可以对函数或变量求值  
+`constexpr` 变量和给定了实参的 `constexpr` 函数可以用于需要编译期常量表达式的地方  
+
+声明对象或*非静态成员函数* (C++14 前)时使用 `constexpr` 说明符则同时蕴含 `const`  
+声明函数或*静态成员变量* (C++17 起)时使用 `constexpr` 说明符则同时蕴含 `inline`  
+如果一个函数或函数模板的某个声明拥有 `constexpr` 说明符，那么它的所有声明都必须含有该说明符  
 
 - const 为运行时常量，constexpr 为编译时常量
 - 修饰函数时，若返回值不能在编译时求出，则被视为普通函数
@@ -303,6 +382,28 @@ complex< double > purei2( purei ); 用另一个复数对象来初始化一个复
 
 - 形如 `pair<string,string> a("b","c");`访问第一个元素为 `a.first`，第二个元素为 `a.second`
 
+#### struct：结构体
+
+空结构体在C中占0字节，C++中占1字节
+
+- 字节对齐  
+  32位系统一次读取4个字节，若一个变量跨越了4的整数倍的内存，则CPU需要访问内存两次，效率较低  
+  在编译期进行  
+  
+  结构体中每个成员的相对于结构体起始地址的偏移为其所占空间（即对齐标准）的整数倍  
+  静态结构体存放在全局数据区，不占用结构体空间  
+  若结构体内含有内部结构体，内部结构体起始位置为内部结构体最大成员所占空间的整数倍  
+  结构体内部包含数组时，数组每个元素单独对齐  
+  结构体地起始地址也须为其最大成员所占空间的整数倍  
+
+- 字节补充  
+  填充结构体末尾，使结构体所占空间为成员中最大成员所占空间的整数倍，使得结构体之后的变量能够自然地字节对齐  
+  
+```cpp
+#pragma pack(2)//指定2字节对齐，最终为指定字节和实际对齐字节取较小值
+#pragma pack()  //取消指定对齐，按默认对齐
+```
+
 #### 类 class：（该小节着重于运算符重载）
 
 - 运算符重载
@@ -388,6 +489,8 @@ if(expr1)
 else expr3;
 ```
 
+ `?:`优先级低于`+`，如果在表达式中使用`?:`务必记得加括号
+
 #### sizeof：返回对象或类型名的字节长度
 
 - 返回值为 `size_t`，定义在 `<cstddef>` 中，与机器相关  
@@ -397,6 +500,8 @@ else expr3;
 
 - 空闲存储区 free store 或堆 heap：程序运行时可用的内存池
 - 动态内存分配 dynamic memory allocation：运行时的内存分配
+
+`new`、`delete`本身无法重载，但其分配空间时会调用`operator new`运算符，该运算符可以[重载](#运算符重载)
 
 #### 值种类(value categories): 对于表达式按值分类  
 
@@ -489,7 +594,8 @@ else expr3;
   - `^`:若值不同，则为 1，否则为 0，等价于半加器交换律，结合律
     1. 翻转特定位
     2. `x^x = 0, x^0 = x, x^y^x=y`
-- bitset `#include<bitset>`
+- bitset `#include<bitset>`  
+  `bitset<N>`，其中N为二进制位数
   - 支持 01 组成的 string 初始化
   - to_string()，to_ulong()
   - | 支持位运算符 |                   |            |
@@ -742,6 +848,49 @@ void func2(int);}
      //pf2为C函数指针，f2为C++函数
      ```
 
+#### lambda表达式
+>
+> C++11 引入
+
+方便的定义匿名函数对象（称为闭包）的方法  
+常用于封装传递给算法或异步函数的少量代码行
+lambda对象是_cdecl的
+
+```cpp
+[]()mutable noexcept constexpr ->void{};
+```
+
+1. lambda引导/capture子句  
+    空capture子句`[]`表示不捕获任何变量  
+    `[&]`表示通过引用捕获lambda体中使用的外部变量  
+    `[=]`表示通过值捕获lambda体中使用的外部变量  
+    
+    可以使用默认捕获模式(`[=]`、`[&]`)同时显式地为特定变量指定相反的模式  
+
+    使用类成员函数和数据成员时，需要显式捕获`this`指针  
+    当使用了默认捕获模式时:  
+    > (until C++20)默认捕获模式会捕获且始终以引用隐式捕获 `*this` 指针  
+    > (since C++20)默认捕获模式为 `[&]` 时会隐式捕获 `*this` 指针  
+    
+    - 通用捕获  
+      >C++14引入  
+
+      可以在capture子句中声明并初始化变量  
+      该变量无法显式指定类型，只能由初始化表达式推导  
+2. 参数列表（可选）  
+    类似于函数参数列表，在其为空且不包含mutable规范、异常规范、尾返回类型时可省略
+3. mutable规范（可选）  
+    默认情况下通过值捕获的变量是const的，mutable规范使得lambda体可以修改通过值捕获的**变量副本**  
+4. 异常规范（可选）  
+    同[异常规范](#异常规范-exception-specification)
+5. constexpr  
+    同[constexpr](#constexpr)  
+    满足条件的情况下，lambda表达式将隐式成为constexpr的
+    constexpr的lambda表达式转换为函数指针时也将是constexpr的
+6. 尾返回类型（可选）  
+    若不显式指定，将自动推导返回类型，若无return语句，将推导为void
+7. lambda体  
+    可以包含普通函数或成员函数体中允许的任何内容
 
 ### 8.域和生命周期
 
@@ -952,12 +1101,31 @@ void func2(int);}
   `template <int a>`
   `a` 代表了一个常量表达式  
 
+#### 简写函数模板
+>
+> C++20 引入
+
+函数声明或函数模板声明中出现占位符类型（auto或Concept auto），该声明会额外声明一个函数模板
+
+```cpp
+void f(auto);//等价于template<class T> void f(T);
+
+template<typename T>
+void g(T, auto);//等价于template<typename T, TT> void g(T,TT);
+```
+
 #### 函数模板实例化template instantiation
 
 > 根据一组或更多实际类型或值构造出独立的函数
+>
+##### 显式实例化
 
+显式实例化定义强制实例化它所指代的函数或成员函数，它可以出现在程序中模板定义后的任何位置  
+形如`template 返回类型 函数名<函数列表>(形参列表)`
 
-- 模板实参推演template argument deduction:用函数实参的类型来决定模板实参的类型和值的过程
+##### 隐式实例化
+
+#### 模板实参推导template argument deduction:用函数实参的类型来决定模板实参的类型和值的过程
 
   对于
 
@@ -979,7 +1147,7 @@ void func2(int);}
 
        对于
 
-       ```c++
+       ```cpp
        template<class T>
        class Base{};
 
@@ -994,6 +1162,7 @@ void func2(int);}
        `test(Derived<int>())`
        会实例化模板为
        `void test(Array<int>&);`
+
 - 显式模板实参  
   显式指定explicitly specify模板实参  
   `Derived<int> a;`
@@ -1003,13 +1172,19 @@ void func2(int);}
 - 包含模式Inclusion Model
 - 分离模式Separation Model
 
-#### 函数模板偏特化(语言暂不支持)(NOT FINISHED)
+#### SFINAE: Substitution Failure Is Not An Error  
+
+在函数模板的重载决议中会应用此规则：当模板形参在替换成显式指定的类型或推导出的类型失败时，从重载集中丢弃这个特化，而非导致编译失败  
+
+通过该规则可以禁止特定类型的实例，从而限制函数模板参数
+
+#### 函数模板偏特化(NOT FINISHED)  
 
 [C++ Templates 2nd](https://github.com/Walton1128/CPP-Templates-2nd--)  
 
 1. 通过[类模板偏特化](#类模板偏特化partial-specializationnot-finished)
 2. 通过标签分发
-3. 通过Concepts(C++20)
+3. 通过 concept(C++20)
 
 
 ### 11.异常处理
@@ -1155,7 +1330,8 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
   2. 对于指针，可以修改指针指向的对象的值
   3. 会重载非 const 同名成员函数
   4. const 类对象仅能调用 const 成员函数和构造、析构函数
-- volatile 成员函数volatile 类对象仅能调用 volatile 成员函数和构造、析构函数
+- volatile 成员函数  
+  volatile 类对象仅能调用 volatile 成员函数和构造、析构函数
 - mutable 数据成员即使是 const 成员函数、const 类对象中也可以修改
 - 构造函数 constructor
 - 析构函数 destructor
@@ -1304,31 +1480,35 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 5. 除了对 operator()外 对其他重载运算符提供缺省实参都是非法的
 6. 若重载了+、=，并不会隐式地重载+=
 
-- 重载new `void* operator new(size_t);`
+- 重载new  
 
-  > `size_t`是一个 `<cstddef>`的 中的 `typedef`
-  >
+  ```cpp
+  void* operator new(size_t);
+  void* operator new(size_t, void*);  //定位new表达式
+  ```
 
-  1. `new()`的返回类型必须是 `void*`型 并且有一个 `size_t`类型的参数
-  2. `::new()`手动选择全局运算符 `new()`
-  3. `new()`和 `new[]()`视为不同的运算符
+    > `size_t`是一个 `<cstddef>` 的 中的 `typedef`
 
-  - 定位运算符new()  
-    `void* operator new(size_t,class*);`
-    由定位new表达式调用
-- 重载delete
-  `void operator delete(void*);`
-  `void operator delete(void*，size_t);`
+    1. `new()`的返回类型必须是 `void*`型 并且有一个 `size_t`类型的参数
+    2. `::new()`手动选择全局运算符 `new()`
+    3. `new()`和 `new[]()`视为不同的运算符
+
+- 重载delete  
+
+    ```cpp
+    void operator delete(void*);
+    void operator delete(void*，size_t);
+    ```
 
 1. `delete()`的返回类型必须是 `void`并且第一个参数的类型是 `void*`
 2. 可以有第二个参数，必须是预定义类型 `size_t`，它将被编译器用第一个参数所指对象的字节大小自动初始化
 3. `::delete()`手动选择全局运算符 `delete()`
 4. `delete()`和 `delete[]()`视为不同的运算符
 
-- 定位运算符delete()`void operator delete(void*,class*);`
+  - 定位运算符delete()`void operator delete(void*,class*);`
 
-  1. 必须与定位运算符new()从第二个参数开始匹配
-  2. 仅当定位运算符new()异常时被调用
+    1. 必须与定位运算符new()从第二个参数开始匹配
+    2. 仅当定位运算符new()异常时被调用
 
 #### 友元
 
@@ -1412,6 +1592,43 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 
 #### 类模板偏特化(partial specialization)(NOT FINISHED)
 
+#### 奇异递归模板(CRTP, Curiously Recurring Template Pattern)  
+
+把派生类作为基类的模板参数  
+
+1. 静态多态
+
+    ```cpp
+    template<typename T>
+    class Base
+    {
+        public: 
+          void interface()
+          {
+            static_cast<T*>(this)->implementation();
+          }
+    }
+    class Derived: public Base<Derived>
+    {
+      public:
+        void implementation()
+        {
+          //do sth
+        }
+    }
+    template<typename T>
+    void Action(Base<T> &t)
+    {
+      t.interface();
+    }
+    ```
+
+    无需虚函数表的内存开销和查表的运行开销  
+    代价时无法动态绑定，多了函数转发的开销  
+2. 添加方法同时精简代码  
+  有多个类存在相同方法，且这些方法可以借助于类的其他方法进行实现时，均可以采用CRTP进行精简代码，将相同的方法抽象到模板父类中
+3. etc.
+
 ### RAII(Resource Acquisition Is Initialization)：使用局部对象管理资源  
 
 通过C++局部对象自动销毁的特性，将资源的获取与销毁封装在类的构造函数和析构函数中，使得资源生命周期由编译器管理，无需人工介入
@@ -1420,14 +1637,65 @@ catch子句按try块之后出现的顺序检查，一旦找到了一个匹配则
 
 > C++11 引入
 
+```cpp
+#include<memory>
+using namespace std;
+```
+
 1. `std::unique_ptr<T, deleter>`：独占资源所有权  
-  无deleter时不能通过构造函数，仅能通过`std::make_unique<T>(const size_t sz)`初始化  
-  不支持拷贝，只支持移动
+    不支持拷贝，只支持移动  
+
+    初始化可以使用`make_unique<T>`或较低效率的构造函数并传递new表达式  
+    当初始化与声明必须分离时，只能初始化为`nullptr`并使用`make_unique`赋值  
+
+    - `make_unique`  
+      有两个重载，对于单个对象，参数用于对象的初始化；对于数组，指定数组大小，因而数组元素无法初始化  
+
+    - 自定义deleter  
+      自定义资源释放操作  
+      不使用自定义deleter时，unique_ptr通过[模板偏特化](#类模板偏特化partial-specializationnot-finished)优化掉了deleter指针  
+      支持函数指针以及`std::function`对象  
+      > `unique_ptr`内部会保存完整的`std::function`对象，但`std::function`的内存开销（具体看环境，>=32字节）远远大于函数指针开销（4、8字节）
 2. `std::shared_ptr<T, deleter>`：共享资源所有权  
-  对资源进行引用计数，计数为0时释放资源  
-    无deleter时不能通过构造函数，仅能通过`std::make_shared<T>(const size_t sz)`初始化  
-3. `std::weak_ptr<T>`：与`std::shared_ptr`一起使用，不影响生命周期  
-  其并不拥有资源，
+    对资源进行引用计数，计数为0时释放资源  
+
+    初始化同`unique_ptr`，使用`make_shared<T>`  
+    - 循环引用  
+      当两个使用共享指针创建的对象互相引用时（即两个对象内部均含有指向对方的共享指针，常见于二叉树的父指针），两者超出作用域后引用计数总是不为零，均不会被删除内存  
+
+    `share_ptr`内部有两个指针，分别指向控制块与资源块  
+    > `shared_ptr`控制块内部也有一个指针指向资源块，两者类型并不一定相同（多态、别名构造函数等？），由控制块内部的资源块指针实际负责释放资源以防止内存泄漏  
+
+    - 别名构造函数Aliasing Constructor  
+
+      ```cpp
+      struct A{ B b;  }
+      shared_ptr<A> outerClass= make_shared<A>();
+      shared_ptr<B> subClass(f, &f->b); 
+      ```
+
+      两个`shared_ptr`共享控制块但资源块指针不同（如一个对象内部包含另一个对象、多继承）  
+      确保智能指针指向另一个智能指针某一部分时，该内存区域只会被析构一次
+3. `std::weak_ptr<T>`：与`std::shared_ptr`一起使用以避免循环引用  
+  仅拥有对象的访问权而不拥有资源；不参与引用计数，不影响生命周期  
+    1. 必要时可提升为`shared_ptr`  
+
+        ```cpp
+        shared_ptr<A> srd=weak.lock();
+        srd=nullptr;//使用完后置nullptr
+        ```
+
+    2. 当`shared_ptr`释放资源时，`weak_ptr`自动变为`nullptr`，但只要`weak_ptr`对象还存在，控制块就不会释放
+4. `std::enable_shared_from_this`  
+    当一个`shared_ptr`指向的类，其成员函数返回`shared_ptr`封装的this指针时，两个`shared_ptr`并不共享控制块，会导致多次delete  
+
+    继承自`std::enable_shared_from_this`的类，其内部增加了指向this的`weak_ptr`，通过`shared_from_this()`方法返回该`weak_ptr`
+    基于[SFINAE](#sfinae-substitution-failure-is-not-an-error)  
+5. `.reset()` 、`.reset(new T)`  
+    调用`.reset()`时会释放资源  
+    **赋值nullptr/NULL时也会释放资源**
+6. `.release()`  
+    取消对资源的托管并返回资源指针
 
 ## 五、面向对象的程序设计
 
@@ -1508,6 +1776,19 @@ virtual关键字只能出现在声明中，类外定义不能出现virtual
   非法，new运算符是静态成员函数，无法被声明为virtual
 
   可以自行实现一个函数实现虚拟new的功能，称为代理new运算符
+- `override`  
+    加上override关键字的函数若非覆盖(override)基类的虚函数时编译器会报错，以避免输入函数名出错、overwrite等情况  
+
+##### 虚函数表
+
+含有虚函数的类在内存中有一个与之对应的虚函数表，该类的对象起始地址处存储指向该虚函数表的指针  
+
+虚函数按照声明顺序存放在表中，父类虚函数在子类虚函数之前
+
+派生类override了基类的虚函数时，override函数的指针会替换虚函数表中基类对应函数指针
+
+- 多继承  
+  多继承的情况下，对于每个有虚函数的基类都会有一个虚函数表，对象中也会额外保存多个虚函数表指针
 
 #### 按成员初始化和赋值
 
