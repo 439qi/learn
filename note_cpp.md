@@ -2631,6 +2631,23 @@ C++11 共有如下四种互斥量
     - 关闭中断另一种实现方法是  
       关闭中断问题在于对于多核CPU无法处理并发冲突的问题
     - 自旋锁
+
+## 协程 Coroutine
+>
+><https://zplutor.github.io/2022/03/25/cpp-coroutine-beginner/>  
+>
+> introduced in C++20  
+
+NFY  
+C++ 采取无栈协程，即一种可以重入的特殊函数，可以在执行中途挂起(yield)，并再之后恢复(resume)到被挂起的点继续执行
+
+### 协程帧
+
+### 关键字
+
+co_await
+co_yield
+co_return
 <!-- 2023.07.20 created-->
 <!-- 2023.10.12 
         stdcall and cdecl 
