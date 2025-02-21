@@ -36,7 +36,24 @@ eg. 形参
 - eg.  
     除字符串字面值之外的字面值、表达式的非引用返回值等  
     特定情况下 prvalue 会实体化并产生一个临时对象(temporary object)，种类为 xvalue  
-    > C++17 规定了返回值优化(RVO, retuan value optimization)，纯右值的返回值用作初始化时直接在要初始化的变量上构造或移动构造  
+    > C++17 规定了 guaranteed copy elision/RVO，纯右值的返回值用作初始化时直接在要初始化的变量上构造或移动构造  
+    >
+    > ```cpp
+    > T func()
+    > {return T();}
+    > //...
+    > T t = func();
+    > ```
+    >
+    > 如下返回值为 xvalue,不会触发 RVO，但会被 NRVO 优化掉  
+    >
+    > ```cpp
+    > T func2()
+    > { T t;
+    > ...
+    > return t;
+    > }
+    > ```
 
 ### 复合值类型
 
