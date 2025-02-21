@@ -1,0 +1,11 @@
+{
+  "useMarkdownLinks": true,
+  "newFileLocation": "root",
+  "newFileFolderPath": "/res",
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "./res",
+  "strictLineBreaks": true,
+  "readableLineLength": false,
+  "smartIndentList": false,
+  "newLinkFormat": "absolute"
+}
