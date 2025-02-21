@@ -202,4 +202,99 @@ __declspec(naked) int __fastcall  power(int i, int j) {
 }
 ```
 
+## cv 类型修饰符  
 
+> [!cite]- References  
+> [cv (const and volatile) type qualifiers - cppreference.com](https://en.cppreference.com/w/cpp/language/cv)  
+> [（七）[bx]、lea 和 Loop --汇编笔记 - 依米荼蘼的博客 | yimitumi | yimitumi.com](http://yimitumi.com/2020/03/18/%E4%B8%83-bx-%E5%92%8C-Loop-%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/)  
+> > [!warning] 存在过时部分  
+> > [C/C++ Volatile关键词深度剖析 - Stephan14博客 | Stephan14 Blog](https://stephan14.github.io/2020/04/14/in-depth-analysis-of-volatile-keywords/)  
+
+除了函数类型和引用类型以外的任何类型均属于以下四种 cv 类型之一  
+数组的 cv 类型取决于其元素  
+- 未 cv 修饰  
+- const 修饰  
+- volatile 修饰  
+- cv 修饰  
+### const  
+### volatile  
+
+> [!cite]- 历史遗留问题  
+> C++ 早期从 C 语言继承了 `volatile` 关键字，该关键字用于标明禁止编译器优化的变量，但具体功能由编译器而定  
+> 早期的微软编译器的 `volatile` 关键字同时会生成内存屏障的代码以确保变量访问的原子性，在多线程场景下可用作互斥锁，而其他编译器不支持这样的特性  
+> 在 C++ 11后，C++ 标准明确了 `volatile` 关键字的含义，该关键字仅应当用于外部硬件相关场景  
+
+
+`volatile` 关键字用于标明对象可能被外部硬件修改，编译器不应对此对象进行优化  
+
+用于如下三个场景  
+- 和信号处理（signal handler）相关的场合  
+- 和内存映射硬件（memory mapped hardware）相关的场合  
+- 和非本地跳转（setjmp 和 longjmp）相关的场合  
+#### 易变性  
+
+每次对 `volatile` 对象的读取，均需从内存中取值而非寄存器的缓存  
+每次对 `volatile` 对象的写入，均需立即将结果从寄存器写回内存  
+
+
+考虑如下代码，在开启优化的情况下  
+```cpp
+a = fn(c);
+b = a+1;
+d = b+1;
+```
+
+若 `a` 非 `volatile` 变量，则 `b=a+1` 将直接使用寄存器中的结果 `a`  
+
+```asm
+mov         ecx,dword ptr [c]       ; a=fn(c)  
+call        fn (07FF6751D20EAh)  
+
+lea         ecx,[eax+1]   ; b=a+1，此处使用 lea 对常量加法优化      
+```
+
+若 `a` 为 `volatile` 变量，则 `a = fn(c)` 执行后会将结果立即写回内存，之后的 `b=a+1` 也将重新从内存中读取 `a`  
+
+```asm
+mov         ecx,dword ptr [c]  ; a=fn(c)  
+call        fn (07FF6751D20EAh)  
+mov         dword ptr [a],eax  
+
+mov         eax,dword ptr [a]  ; b = a + 1
+inc         eax  
+mov         dword ptr [b],eax 
+```
+
+#### 不可优化  
+
+`volatile` 对象不会被编译器**优化掉(optimize out)**  
+
+考虑如下代码，在开启优化的情况下  
+
+```cpp
+a=1;
+fn(a);
+```
+
+若 `a` 非 `volatile` 变量，则编译器直接使用常量1调用函数  
+
+```asm
+push        1
+call        fn
+```
+
+若 `a` 为 `volatile` 变量，则编译器不会优化掉变量 `a`  
+
+```asm
+mov         dword ptr [a],1
+
+mov         eax,dword ptr [a]
+push        eax
+call        fn
+```
+#### 顺序性  
+
+`volatile` 对象之间的访问顺序不会被==编译器==重排序  
+
+但 `volatile` 对象和非 `volatile` 对象之间仍可能被重排序，且无法阻止 CPU 乱序  
+因而不应当将 `volatile` 用于多线程同步  
