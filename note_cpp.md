@@ -1900,6 +1900,10 @@ this 不再必须为指针形式，也可通过引用或值传递
   - 数据成员必须为public，且不能定义成员函数
   - 全局域中定义的union 必须声明在未命名的命名空间中或声明为static
 
+##### Variant, 类型安全的union
+>
+> [Variant Visitation](<https://mpark.github.io/programming/2015/07/07/variant-visitation/>)
+>
 #### 位域bit-field
 
 > 用于存放特定数目的位
