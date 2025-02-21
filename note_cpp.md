@@ -688,20 +688,6 @@ auto关键字指示编译器从初始化表达式中自动推导变量的类型
   |单个元素|推导为元素类型|推导为元素类型的initializer_list|
   |多个元素| 语法错误 | 推导为推导为元素类型的initializer_list|
 
-#### 存储时期
-
-C++ 中数据存在4个存储时期，automatic, static, thread, dynamic  
-
-- automatic  
-  栈上数据，在进入作用域时申请内存，离开时自动释放
-- static  
-  [.data/.bss/.rodata](#程序数据段) 段的数据，在程序执行时申请内存，程序结束时释放
-- dynamic  
-  堆上内存，手动申请和释放的内存
-- thread  
-  C++11 引入，由 `thread_local` 修饰的数据  
-  在线程开始时申请内存，线程结束时释放
-
 ### 4.表达式
 
 #### 表达式 expression
@@ -1192,6 +1178,16 @@ lambda对象是_cdecl的
 
 > 域和名称解析是编译期的概念  
 
+每个程序都有一个全局作用域，它包含了整个程序  
+
+其他每个作用域 S 会以以下之一引入：
+
+- 一个声明
+- 形参列表中的一个形参
+- 一条语句
+- 一个处理块
+S 会始终在其他作用域中出现，这些作用域从而包含 S。
+
 ##### 1. 局部域local scope：包含在函数定义或函数块中的程序文本部分；每个复合语句也有一个独立的局部域
 
 - 局部对象local object: 局部域中声明的对象，三种局部对象由其所在存储区的属性和生命期区分
@@ -1269,6 +1265,47 @@ lambda对象是_cdecl的
 
 ##### 3. 类域class scope
 
+##### 存储期 storage duration
+
+存储期是对象的一种属性，由创建对象的方式决定，其定义了该对象存储的最短潜在生存期  
+存储期也同样适用于引用  
+
+存储期受以下限定符影响  
+
+- ~~auto~~(until C++11)
+- register(until C++17)
+- static
+- thread_local(since C++11)
+- extern
+- mutable
+
+存储期是以下四种之一  
+
+- 静态存储期static storage duration  
+  静态存储区变量需满足如下**所有**要求
+  - 属于命名空间域或声明时由 `static` 或 `extern` 限定  
+  - 不属于线程存储期  
+
+  静态存储期变量在程序运行期间持续存在  
+
+- 线程存储期thread storage duration  
+  线程存储期变量声明时由 `thread_local` 限定  
+
+  线程存储期变量在所属的线程持续期间持续存在  
+  > introduced in C++11  
+
+- 自动存储期automatic storage duration  
+- 动态存储期dynamic storage duration  
+
+- automatic  
+  栈上数据，在进入作用域时申请内存，离开时自动释放
+- static  
+  [.data/.bss/.rodata](#程序数据段) 段的数据，在程序执行时申请内存，程序结束时释放
+- dynamic  
+  堆上内存，手动申请和释放的内存
+- thread  
+  C++11 引入，由 `thread_local` 修饰的数据  
+  在线程开始时申请内存，线程结束时释放
 
 ### 9.重载函数function overloading
 
